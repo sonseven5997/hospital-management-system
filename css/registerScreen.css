@@ -1,0 +1,66 @@
+.register-container{
+  background: url("../images/register-background.jpg");
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.register-container .register-form{
+  width: 400px;
+  height: 100vh;
+  background: #ffffff;
+  padding: 20px;
+}
+
+.register-form .title {
+  text-align: center;
+  font-size: 25px;
+  color: #757575;
+  font-family: sans-serif;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 20px 13px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+}
+
+.register-form .input-wrapper {
+  margin-bottom: 10px;
+}
+
+.register-form .name-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-wrapper .input-wrapper input {
+  width: 99%;
+}
+
+.submit-wrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.role-wrapper > select {
+  font-family: 'sans-serif';
+}
+
+.gender-wrapper > select {
+  font-family: 'sans-serif';
+}
+
+.gender-role-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
