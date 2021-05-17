@@ -128,37 +128,45 @@ controller.addNewAppointment = (appointment) => {
   appointment.scheduleType == ""
     ? view.setErrorMessage("schedule-type-error", "Please input schedule type")
     : view.setErrorMessage("schedule-type-error", "");
-  if (appointment.name !== '' && appointment.startDate !== '' && appointment.scheduleType !== '') {
-    model.addNewAppointment(appointment)
+  new Date(appointment.startDate).toISOString() < new Date().toISOString()
+    ? view.setErrorMessage("start-time-error", "Date is invalid")
+    : view.setErrorMessage("start-time-error", "");
+  if (
+    appointment.name !== "" &&
+    appointment.startDate !== "" &&
+    appointment.scheduleType !== "" &&
+    new Date(appointment.startDate).toISOString() >= new Date().toISOString()
+  ) {
+    model.addNewAppointment(appointment);
   }
 };
 
 controller.editPatient = (patient) => {
   patient.name == ""
-  ? view.setErrorMessage("name-error", "Please input name")
-  : view.setErrorMessage("name-error", "");
-patient.gender == ""
-  ? view.setErrorMessage("gender-error", "Please choose gender")
-  : view.setErrorMessage("gender-error", "");
-patient.dob == ""
-  ? view.setErrorMessage("dob-error", "Please choose date of birth")
-  : view.setErrorMessage("dob-error", "");
-patient.email == ""
-  ? view.setErrorMessage("email-error", "Please input email")
-  : view.setErrorMessage("email-error", "");
-patient.phone == ""
-  ? view.setErrorMessage("phone-error", "Please input phone")
-  : view.setErrorMessage("phone-error", "");
-if (
-  patient.name !== "" &&
-  patient.gender !== "" &&
-  patient.dob !== "" &&
-  patient.email !== "" &&
-  patient.phone !== ""
-) {
-  model.editPatient(patient);
-}
-}
+    ? view.setErrorMessage("name-error", "Please input name")
+    : view.setErrorMessage("name-error", "");
+  patient.gender == ""
+    ? view.setErrorMessage("gender-error", "Please choose gender")
+    : view.setErrorMessage("gender-error", "");
+  patient.dob == ""
+    ? view.setErrorMessage("dob-error", "Please choose date of birth")
+    : view.setErrorMessage("dob-error", "");
+  patient.email == ""
+    ? view.setErrorMessage("email-error", "Please input email")
+    : view.setErrorMessage("email-error", "");
+  patient.phone == ""
+    ? view.setErrorMessage("phone-error", "Please input phone")
+    : view.setErrorMessage("phone-error", "");
+  if (
+    patient.name !== "" &&
+    patient.gender !== "" &&
+    patient.dob !== "" &&
+    patient.email !== "" &&
+    patient.phone !== ""
+  ) {
+    model.editPatient(patient);
+  }
+};
 
 controller.editAppointment = (appointment) => {
   appointment.name == ""
@@ -170,23 +178,41 @@ controller.editAppointment = (appointment) => {
   appointment.scheduleType == ""
     ? view.setErrorMessage("schedule-type-error", "Please input schedule type")
     : view.setErrorMessage("schedule-type-error", "");
-  if (appointment.name !== '' && appointment.startDate !== '' && appointment.scheduleType !== '') {
-    model.editAppointment(appointment)
+  if (
+    appointment.name !== "" &&
+    appointment.startDate !== "" &&
+    appointment.scheduleType !== ""
+  ) {
+    model.editAppointment(appointment);
   }
 };
 
 controller.addNewLabRequest = (req) => {
-  req.patient == "" ? view.setErrorMessage('patient-name-lab-request-error','Please input patient name') : view.setErrorMessage('patient-name-lab-request-error','') 
-  req.type == "" ? view.setErrorMessage('lab-type-request-error','Please input lab type') : view.setErrorMessage('lab-type-request-error','') 
-  if (req.patient !== '' && req.type !== ''){
-    model.addNewLabRequest(req)
+  req.patient == ""
+    ? view.setErrorMessage(
+        "patient-name-lab-request-error",
+        "Please input patient name"
+      )
+    : view.setErrorMessage("patient-name-lab-request-error", "");
+  req.type == ""
+    ? view.setErrorMessage("lab-type-request-error", "Please input lab type")
+    : view.setErrorMessage("lab-type-request-error", "");
+  if (req.patient !== "" && req.type !== "") {
+    model.addNewLabRequest(req);
   }
-}
+};
 
 controller.editLabRequest = (req) => {
-  req.patient == "" ? view.setErrorMessage('patient-name-lab-request-error','Please input patient name') : view.setErrorMessage('patient-name-lab-request-error','') 
-  req.type == "" ? view.setErrorMessage('lab-type-request-error','Please input lab type') : view.setErrorMessage('lab-type-request-error','') 
-  if (req.patient !== '' && req.type !== ''){
-    model.editLabRequest(req)
+  req.patient == ""
+    ? view.setErrorMessage(
+        "patient-name-lab-request-error",
+        "Please input patient name"
+      )
+    : view.setErrorMessage("patient-name-lab-request-error", "");
+  req.type == ""
+    ? view.setErrorMessage("lab-type-request-error", "Please input lab type")
+    : view.setErrorMessage("lab-type-request-error", "");
+  if (req.patient !== "" && req.type !== "") {
+    model.editLabRequest(req);
   }
-}
+};

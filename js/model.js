@@ -6,6 +6,7 @@ model.register = (firstName, lastName, email, password, dob, gender, role) => {
     .createUserWithEmailAndPassword(email, password)
     .then((res) => {
       console.log(res);
+      firebase.auth().signOut()
       firebase.auth().currentUser.sendEmailVerification();
       firebase.auth().currentUser.updateProfile({
         displayName: firstName + " " + lastName,

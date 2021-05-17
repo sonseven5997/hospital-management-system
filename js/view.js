@@ -43,95 +43,198 @@ view.setActiveScreen = (screenName) => {
       });
       break;
     case "mainScreen":
-      switch (model.currentUser.role) {
-        case "doctor" || "nurse":
-          document.getElementById("app").innerHTML =
-            components.clinicalMainScreen;
-          view.showPatientList();
-          document
-            .getElementById("patientList")
-            .addEventListener("click", (e) => {
-              e.preventDefault();
-              view.showPatientList();
-            });
-          const addNewPatientForm =
-            document.getElementById("addNewPatientForm");
-          addNewPatientForm.addEventListener("submit", (e) => {
+      if (
+        model.currentUser.role == "doctor" ||
+        model.currentUser.role == "nurse"
+      ) {
+        document.getElementById("app").innerHTML =
+          components.clinicalMainScreen;
+        view.showPatientList();
+        document
+          .getElementById("patientList")
+          .addEventListener("click", (e) => {
             e.preventDefault();
-            const newPatient = {
-              name: document.getElementById("patient-name").value,
-              gender: document.getElementById("patient-gender").value,
-              dob: document.getElementById("patient-dob").value,
-              pob: document.getElementById("patient-pob").value,
-              occupation: document.getElementById("patient-occupation").value,
-              email: document.getElementById("patient-email").value,
-              phone: document.getElementById("patient-phone").value,
-              patientType: document.getElementById("patientType").value,
-              bloodType: document.getElementById("bloodType").value,
-              referredBy: document.getElementById("patient-referred-by").value,
-              referredDate: document.getElementById("patient-referred-date")
-                .value,
-              religion: document.getElementById("patient-religion").value,
-              parentGuardian: document.getElementById("patient-parent-guardian")
-                .value,
-              timeCheckIn: new Date().toISOString(),
-              timeCheckOut: "",
-            };
-            controller.addNewPatient(newPatient);
+            view.showPatientList();
           });
-          document.getElementById("doctor-in-charge").value =
-            model.currentUser.name;
-          const addNewAppointmentForm = document.getElementById(
-            "addNewAppointmentForm"
-          );
-          addNewAppointmentForm.addEventListener("submit", (e) => {
+        const addNewPatientForm = document.getElementById("addNewPatientForm");
+        addNewPatientForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newPatient = {
+            name: document.getElementById("patient-name").value,
+            gender: document.getElementById("patient-gender").value,
+            dob: document.getElementById("patient-dob").value,
+            pob: document.getElementById("patient-pob").value,
+            occupation: document.getElementById("patient-occupation").value,
+            email: document.getElementById("patient-email").value,
+            phone: document.getElementById("patient-phone").value,
+            patientType: document.getElementById("patientType").value,
+            bloodType: document.getElementById("bloodType").value,
+            referredBy: document.getElementById("patient-referred-by").value,
+            referredDate: document.getElementById("patient-referred-date")
+              .value,
+            religion: document.getElementById("patient-religion").value,
+            parentGuardian: document.getElementById("patient-parent-guardian")
+              .value,
+            timeCheckIn: new Date().toISOString(),
+            timeCheckOut: "",
+          };
+          controller.addNewPatient(newPatient);
+        });
+        document.getElementById("doctor-in-charge").value =
+          model.currentUser.name;
+        const addNewAppointmentForm = document.getElementById(
+          "addNewAppointmentForm"
+        );
+        addNewAppointmentForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newAppointment = {
+            name: document.getElementById("patient-name-schedule").value,
+            startDate: document.getElementById("start-date").value,
+            scheduleType: document.getElementById("schedule-type").value,
+            disease: document.getElementById("disease").value,
+            location: document.getElementById("location").value,
+            note: document.getElementById("note-appointment").value,
+            doctorInCharge: {
+              id: model.currentUser.id,
+              name: model.currentUser.name,
+            },
+          };
+          controller.addNewAppointment(newAppointment);
+        });
+        document
+          .getElementById("appointment-list")
+          .addEventListener("click", (e) => {
             e.preventDefault();
-            const newAppointment = {
-              name: document.getElementById("patient-name-schedule").value,
-              startDate: document.getElementById("start-date").value,
-              scheduleType: document.getElementById("schedule-type").value,
-              disease: document.getElementById("disease").value,
-              location: document.getElementById("location").value,
-              note: document.getElementById("note-appointment").value,
-              doctorInCharge: model.currentUser.id,
-            };
-            controller.addNewAppointment(newAppointment);
+            view.showAppointmentListThisWeek(model.currentUser.role);
           });
-          document
-            .getElementById("appointment-list")
-            .addEventListener("click", (e) => {
-              e.preventDefault();
-              view.showAppointmentListThisWeek();
-            });
-          document
-            .getElementById("today-appointment")
-            .addEventListener("click", (e) => {
-              e.preventDefault();
-              view.showTodayAppointment();
-            });
-          const addNewLabRequest = document.getElementById("addLabRequestForm");
-          addNewLabRequest.addEventListener("submit", (e) => {
+        document
+          .getElementById("today-appointment")
+          .addEventListener("click", (e) => {
             e.preventDefault();
-            const newLabRequest = {
-              patient: document.getElementById("patient-name-lab-request")
-                .value,
-              type: document.getElementById("lab-type-request").value,
-              note: document.getElementById("note-lab").value,
-            };
-            controller.addNewLabRequest(newLabRequest);
+            view.showTodayAppointment(model.currentUser.role);
           });
-          document
-            .getElementById("lab-request-list")
-            .addEventListener("click", (e) => {
-              view.showLabRequestList();
+        const addNewLabRequest = document.getElementById("addLabRequestForm");
+        addNewLabRequest.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newLabRequest = {
+            patient: document.getElementById("patient-name-lab-request").value,
+            type: document.getElementById("lab-type-request").value,
+            note: document.getElementById("note-lab").value,
+          };
+          controller.addNewLabRequest(newLabRequest);
+        });
+        document
+          .getElementById("lab-request-list")
+          .addEventListener("click", (e) => {
+            view.showLabRequestList();
+          });
+        document
+          .getElementById("lab-request-completed")
+          .addEventListener("click", (e) => {
+            view.showLabCompletedList();
+          });
+        document.getElementById("signOutBtn").addEventListener("click", (e) => {
+          e.preventDefault();
+          firebase
+            .auth()
+            .signOut()
+            .then(() => {
+              view.setActiveScreen("registerScreen");
+            })
+            .catch((error) => {
+              console.log(error);
             });
-          break;
-        case "patient-admin" || "hospital-admin":
-          break;
-        case "lab-technician":
-          break;
-        default:
-          break;
+        });
+      } else if (
+        model.currentUser.role == "hospital-admin" ||
+        model.currentUser.role == "patient-admin"
+      ) {
+        document.getElementById("app").innerHTML = components.adminMainScreen;
+        view.showPatientList();
+        document
+          .getElementById("patientList")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showPatientList();
+          });
+        const addNewPatientForm = document.getElementById("addNewPatientForm");
+        addNewPatientForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newPatient = {
+            name: document.getElementById("patient-name").value,
+            gender: document.getElementById("patient-gender").value,
+            dob: document.getElementById("patient-dob").value,
+            pob: document.getElementById("patient-pob").value,
+            occupation: document.getElementById("patient-occupation").value,
+            email: document.getElementById("patient-email").value,
+            phone: document.getElementById("patient-phone").value,
+            patientType: document.getElementById("patientType").value,
+            bloodType: document.getElementById("bloodType").value,
+            referredBy: document.getElementById("patient-referred-by").value,
+            referredDate: document.getElementById("patient-referred-date")
+              .value,
+            religion: document.getElementById("patient-religion").value,
+            parentGuardian: document.getElementById("patient-parent-guardian")
+              .value,
+            timeCheckIn: new Date().toISOString(),
+            timeCheckOut: "",
+          };
+          controller.addNewPatient(newPatient);
+        });
+        document
+          .getElementById("appointment-list")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showAppointmentListThisWeek(model.currentUser.role);
+          });
+        document
+          .getElementById("today-appointment")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showTodayAppointment(model.currentUser.role);
+          });
+        document
+          .getElementById("lab-request-list")
+          .addEventListener("click", (e) => {
+            view.showLabRequestList();
+          });
+        document.getElementById("signOutBtn").addEventListener("click", (e) => {
+          e.preventDefault();
+          firebase
+            .auth()
+            .signOut()
+            .then(() => {
+              view.setActiveScreen("registerScreen");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
+      } else if (model.currentUser.role == "lab-technician") {
+        document.getElementById("app").innerHTML = components.supportMainScreen;
+        view.showLabRequestList();
+        document
+          .getElementById("lab-request-list")
+          .addEventListener("click", (e) => {
+            view.showLabRequestList();
+          });
+        document
+          .getElementById("lab-request-completed")
+          .addEventListener("click", (e) => {
+            view.showLabCompletedList();
+          });
+        document.getElementById("signOutBtn").addEventListener("click", (e) => {
+          e.preventDefault();
+          firebase
+            .auth()
+            .signOut()
+            .then(() => {
+              view.setActiveScreen("registerScreen");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
       }
       break;
     default:
@@ -204,7 +307,6 @@ view.showPatientList = () => {
     </div>`;
       document.getElementById("mainContent").appendChild(tableWrapper);
       patientList.forEach((element) => {
-        console.log(element.id);
         document.getElementById(element.id).addEventListener("click", (e) => {
           e.preventDefault();
           view.showDetailPatient(element);
@@ -222,185 +324,195 @@ view.hideModal = () => {
   });
 };
 
-view.showAppointmentListThisWeek = () => {
-  let appointmentList = [];
-  let appointmentThisWeekList = [];
-  firebase
-    .firestore()
-    .collection("appointment")
-    .where("doctorInCharge", "==", model.currentUser.id)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        let patient = { ...doc.data(), id: doc.id };
-        appointmentList.push(patient);
-      });
-    })
-    .then(() => {
-      console.log(appointmentList);
-      appointmentList.forEach((element) => {
-        if (
-          moment(element.startDate) > moment().startOf("week").toDate() &&
-          moment(element.startDate) < moment().endOf("week").toDate()
-        ) {
-          appointmentThisWeekList.push(element);
-        }
-      });
-      console.log(appointmentThisWeekList);
-    })
-    .then(() => {
-      let tableWrapper = document.createElement("div");
-      tableWrapper.classList.add("table-responsive");
-      let table = document.createElement("table");
-      table.classList.add("table");
-      table.classList.add("table-striped");
-      table.classList.add("table-sm");
-      let tableHeader = document.createElement("thead");
-      tableHeader.innerHTML = `
-              <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Location</th>
-              </tr>
-      `;
-      console.log(tableHeader);
-      table.appendChild(tableHeader);
-      let tableBody = document.createElement("tbody");
-      appointmentThisWeekList.forEach((element) => {
-        tableBody.innerHTML += `
-              <tr class="cursor-pointer" id="${element.id}">
-                <td>${moment(element.startDate).format(
-                  "DD-MM-YYYY h:mm A"
-                )}</td>
-                <td>${element.name}</td>
-                <td>${element.scheduleType}</td>
-                <td>${element.location}</td>
-              </tr>
-        `;
-      });
-      table.appendChild(tableBody);
-      tableWrapper.appendChild(table);
-      document.getElementById("mainContent").innerHTML = `<div
-      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-      <h1 class="h2">Appointment list</h1>
-    </div>`;
-      document.getElementById("mainContent").appendChild(tableWrapper);
-      appointmentThisWeekList.forEach((element) => {
-        document.getElementById(element.id).addEventListener("click", (e) => {
-          e.preventDefault();
-          view.showDetailAppointment(element);
+view.showAppointmentListThisWeek = (role) => {
+  if (role == "doctor" || role == "nurse") {
+    let appointmentList = [];
+    let appointmentThisWeekList = [];
+    firebase
+      .firestore()
+      .collection("appointment")
+      .where("doctorInCharge.id", "==", model.currentUser.id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let patient = { ...doc.data(), id: doc.id };
+          appointmentList.push(patient);
         });
+      })
+      .then(() => {
+        console.log(appointmentList);
+        appointmentList.forEach((element) => {
+          if (
+            moment(element.startDate) > moment().startOf("week").toDate() &&
+            moment(element.startDate) < moment().endOf("week").toDate()
+          ) {
+            appointmentThisWeekList.push(element);
+          }
+        });
+        console.log(appointmentThisWeekList);
+      })
+      .then(() => {
+        let tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("table-responsive");
+        let table = document.createElement("table");
+        table.classList.add("table");
+        table.classList.add("table-striped");
+        table.classList.add("table-sm");
+        let tableHeader = document.createElement("thead");
+        tableHeader.innerHTML = `
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                </tr>
+        `;
+        console.log(tableHeader);
+        table.appendChild(tableHeader);
+        let tableBody = document.createElement("tbody");
+        appointmentThisWeekList.forEach((element) => {
+          tableBody.innerHTML += `
+                <tr class="cursor-pointer" id="${element.id}">
+                  <td>${moment(element.startDate).format(
+                    "DD-MM-YYYY h:mm A"
+                  )}</td>
+                  <td>${element.name}</td>
+                  <td>${element.scheduleType}</td>
+                  <td>${element.location}</td>
+                </tr>
+          `;
+        });
+        table.appendChild(tableBody);
+        tableWrapper.appendChild(table);
+        document.getElementById("mainContent").innerHTML = `<div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+        <h1 class="h2">Appointment list</h1>
+      </div>`;
+        if (appointmentThisWeekList.length !== 0) {
+          document.getElementById("mainContent").appendChild(tableWrapper);
+          appointmentThisWeekList.forEach((element) => {
+            document
+              .getElementById(element.id)
+              .addEventListener("click", (e) => {
+                e.preventDefault();
+                view.showDetailAppointment(element);
+              });
+          });
+        } else {
+          document.getElementById("mainContent").innerHTML +=
+            "<div>You have no appointment this week</div>";
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
       });
-    })
-    .catch((error) => {
-      console.log("Error getting documents: ", error);
-    });
+  } else if (role == "patient-admin" || role == "hospital-admin") {
+    let appointmentList = [];
+    let appointmentThisWeekList = [];
+    firebase
+      .firestore()
+      .collection("appointment")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let patient = { ...doc.data(), id: doc.id };
+          appointmentList.push(patient);
+        });
+      })
+      .then(() => {
+        console.log(appointmentList);
+        appointmentList.forEach((element) => {
+          if (
+            moment(element.startDate) > moment().startOf("week").toDate() &&
+            moment(element.startDate) < moment().endOf("week").toDate()
+          ) {
+            appointmentThisWeekList.push(element);
+          }
+        });
+        console.log(appointmentThisWeekList);
+      })
+      .then(() => {
+        let tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("table-responsive");
+        let table = document.createElement("table");
+        table.classList.add("table");
+        table.classList.add("table-striped");
+        table.classList.add("table-sm");
+        let tableHeader = document.createElement("thead");
+        tableHeader.innerHTML = `
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                </tr>
+        `;
+        table.appendChild(tableHeader);
+        let tableBody = document.createElement("tbody");
+        appointmentThisWeekList.forEach((element) => {
+          tableBody.innerHTML += `
+                <tr class="cursor-pointer" id="${element.id}">
+                  <td>${moment(element.startDate).format(
+                    "DD-MM-YYYY h:mm A"
+                  )}</td>
+                  <td>${element.name}</td>
+                  <td>${element.scheduleType}</td>
+                  <td>${element.location}</td>
+                </tr>
+          `;
+        });
+        table.appendChild(tableBody);
+        tableWrapper.appendChild(table);
+        document.getElementById("mainContent").innerHTML = `
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Appointment list</h1>
+          </div>`;
+        if (appointmentThisWeekList.length !== 0) {
+          document.getElementById("mainContent").appendChild(tableWrapper);
+          appointmentThisWeekList.forEach((element) => {
+            document
+              .getElementById(element.id)
+              .addEventListener("click", (e) => {
+                e.preventDefault();
+                view.showDetailAppointment(element);
+              });
+          });
+        } else {
+          document.getElementById("mainContent").innerHTML +=
+            "<div>There is no appointment this week</div>";
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  }
 };
 
 view.showDetailPatient = (element) => {
-  document.getElementById("mainContent").innerHTML = ` 
-  <div class=" modal-title display-4 fw-normal d-flex justify-content-center">Patient profile</div>
-  <form id="editPatientForm">
-    <div class="d-flex">
-      <div class="flex-fill mr-3">
-        <div class="mb-3">
-          <label for="patient-name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="patient-name" aria-describedby="name-error">
-          <div id="name-error" class="form-text error"></div>
-        </div>
-        <div class="form-floating">
-          <label for="patient-gender">Patient gender</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
-            id="patient-gender">
-            <option value="" selected></option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-          <div id="gender-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-dob" class="form-label">Date of birth</label>
-          <input type="date" class="form-control" id="patient-dob" aria-describedby="dob-error">
-          <div id="dob-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-pob" class="form-label">Place of birth</label>
-          <input type="text" class="form-control" id="patient-pob" aria-describedby="pob-error">
-          <div id="pob-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-occupation" class="form-label">Occupation</label>
-          <input type="text" class="form-control" id="patient-occupation" aria-describedby="occupation-error">
-          <div id="occupation-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-email" class="form-label">Email</label>
-          <input type="text" class="form-control" id="patient-email" aria-describedby="email-error">
-          <div id="email-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-phone" class="form-label">Phone</label>
-          <input type="text" class="form-control" id="patient-phone" aria-describedby="phone-error">
-          <div id="phone-error" class="form-text error"></div>
-        </div>
-      </div>
-      <div class="flex-fill">
-        <div class="form-floating">
-          <label for="patientType">Patient type</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
-            id="patientType">
-            <option value="" selected></option>
-            <option value="charity">Charity</option>
-            <option value="private">Private</option>
-          </select>
-          <div id="patientType-error" class="form-text error"></div>
-        </div>
-        <div class="form-floating">
-          <label for="bloodType">Blood type</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
-            id="bloodType">
-            <option value="" selected></option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
-          </select>
-          <div id="bloodType-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-referred-by" class="form-label">Referred by</label>
-          <input type="text" class="form-control" id="patient-referred-by" aria-describedby="referred-by-error">
-          <div id="referred-by-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-referred-date" class="form-label">Referred date</label>
-          <input type="date" class="form-control" id="patient-referred-date" aria-describedby="referred-date-error">
-          <div id="referred-date-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-religion" class="form-label">Religion</label>
-          <input type="text" class="form-control" id="patient-religion" aria-describedby="religion-error">
-          <div id="religion-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="patient-parent-guardian" class="form-label">Parent/Guardian</label>
-          <input type="text" class="form-control" id="patient-parent-guardian"
-            aria-describedby="parent-guardian-error">
-          <div id="parent-guardian-error" class="form-text error"></div>
-        </div>
-      </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <button type="submit" class="btn btn-primary mr-1" id="editPatientBtn">Edit patient profile</button>
-      <button type="button" class="btn btn-secondary cancel-btn" data-dismiss="modal" id="cancelEditPatientBtn">Cancel</button>
-    </div>
-  </form>`;
+  document.getElementById("mainContent").innerHTML =
+    components.detailPatientMainScreen;
+  if (
+    model.currentUser.role !== "patient-admin" ||
+    model.currentUser.role !== "hospital-admin"
+  ) {
+    document.getElementById("deletePatientBtn").style.display = "none";
+  }
+  document.getElementById("deletePatientBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    firebase
+      .firestore()
+      .collection("patients")
+      .doc(element.id)
+      .delete()
+      .then(() => {
+        alert("Document successfully deleted!");
+        view.showPatientList();
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+  });
   document.getElementById("patient-name").value = element.name;
   document.getElementById("patient-gender").value = element.gender;
   document.getElementById("patient-dob").value = element.dob;
@@ -431,6 +543,9 @@ view.showDetailPatient = (element) => {
       referredDate: document.getElementById("patient-referred-date").value,
       religion: document.getElementById("patient-religion").value,
       parentGuardian: document.getElementById("patient-parent-guardian").value,
+      timeCheckOut: document.getElementById("checkOutOption").checked
+        ? new Date().toISOString()
+        : "",
     };
     controller.editPatient({ ...patientToEdit, id: element.id });
   });
@@ -443,63 +558,10 @@ view.showDetailPatient = (element) => {
 };
 
 view.showDetailAppointment = (appointment) => {
-  document.getElementById("mainContent").innerHTML = `
-  <div class=" modal-title display-4 fw-normal d-flex justify-content-center">Appointment detail</div>
-  <form id="editAppointmentForm">
-    <div class="d-flex">
-      <div class="flex-fill mr-3">
-        <div class="mb-3">
-          <label for="patient-name-schedule" class="form-label">Name</label>
-          <input type="text" class="form-control" id="patient-name-schedule" aria-describedby="name-error">
-          <div id="name-schedule-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="start-time" class="form-label">Start time</label>
-          <input type="datetime-local" class="form-control" id="start-date" aria-describedby="start-time-error">
-          <div id="start-time-error" class="form-text error"></div>
-        </div>
-        <div class="form-floating">
-          <label for="schedule-type">Type</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
-            id="schedule-type">
-            <option value="" selected></option>
-            <option value="admission">Admission</option>
-            <option value="consultation">Consultation</option>
-            <option value="imaging">Imaging</option>
-            <option value="lab">Lab</option>
-            <option value="pharmacy">Pharmacy</option>
-          </select>
-          <div id="schedule-type-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="disease" class="form-label">Disease</label>
-          <input type="text" class="form-control" id="disease" aria-describedby="disease-error">
-          <div id="disease-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="location" class="form-label">Location</label>
-          <input type="text" class="form-control" id="location" aria-describedby="location-error">
-          <div id="location-error" class="form-text error"></div>
-        </div>
-        <div class="mb-3">
-          <label for="note" class="form-label">Note</label>
-          <input type="text" class="form-control" id="note-appointment" aria-describedby="note-error">
-          <div id="note-error" class="form-text error"></div>
-        </div>    
-        <div class="mb-3">
-          <label for="doctor-in-charge" class="form-label">Doctor in charge</label>
-          <input type="text" class="form-control" id="doctor-in-charge" aria-describedby="note-error" disabled>
-          <div id="doctor-in-charge-error" class="form-text error"></div>
-        </div>   
-      </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <button type="submit" class="btn btn-primary mr-1" id="editAppointmentBtn">Edit appointment</button>
-      <button type="button" class="btn btn-secondary cancel-btn" data-dismiss="modal" id="cancelEditAppointmentBtn">Cancel</button>
-    </div>
-  </form>
-  `;
-  document.getElementById("doctor-in-charge").value = model.currentUser.name;
+  document.getElementById("mainContent").innerHTML =
+    components.detailAppointmentMainScreen;
+  document.getElementById("doctor-in-charge").value =
+    appointment.doctorInCharge.name;
   document.getElementById("patient-name-schedule").value = appointment.name;
   document.getElementById("start-date").value = appointment.startDate;
   document.getElementById("schedule-type").value = appointment.scheduleType;
@@ -524,7 +586,7 @@ view.showDetailAppointment = (appointment) => {
     .getElementById("cancelEditAppointmentBtn")
     .addEventListener("click", (e) => {
       e.preventDefault();
-      view.showAppointmentListThisWeek();
+      view.showAppointmentListThisWeek(model.currentUser.role);
     });
 };
 
@@ -579,14 +641,89 @@ view.showLabRequestList = () => {
       document.getElementById("mainContent").innerHTML = `<div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
       <h1 class="h2">Lab request list</h1>
-    </div>`;
-      document.getElementById("mainContent").appendChild(tableWrapper);
-      labRequestList.forEach((element) => {
-        document.getElementById(element.id).addEventListener("click", (e) => {
-          e.preventDefault();
-          view.showDetailLabRequest(element);
+      </div>`;
+      if (labRequestList.length !== 0) {
+        document.getElementById("mainContent").appendChild(tableWrapper);
+        labRequestList.forEach((element) => {
+          document.getElementById(element.id).addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showDetailLabRequest(element);
+          });
         });
+      } else {
+        document.getElementById("mainContent").innerHTML +=
+          "<div>There is no lab request</div>";
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+};
+
+view.showLabCompletedList = () => {
+  let labCompletedList = [];
+  firebase
+    .firestore()
+    .collection("labs")
+    .where("status", "==", "completed")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let req = { ...doc.data(), id: doc.id };
+        labCompletedList.push(req);
       });
+    })
+    .then(() => {
+      let tableWrapper = document.createElement("div");
+      tableWrapper.classList.add("table-responsive");
+      let table = document.createElement("table");
+      table.classList.add("table");
+      table.classList.add("table-striped");
+      table.classList.add("table-sm");
+      let tableHeader = document.createElement("thead");
+      tableHeader.innerHTML = `
+              <tr>
+                <th>Date requested</th>
+                <th>Patient name</th>
+                <th>Requested by</th>
+                <th>Lab type</th>
+                <th>Note</th>
+              </tr>
+      `;
+      console.log(tableHeader);
+      table.appendChild(tableHeader);
+      let tableBody = document.createElement("tbody");
+      labCompletedList.forEach((element) => {
+        tableBody.innerHTML += `
+              <tr class="cursor-pointer" id="${element.id}">
+                <td>${moment(element.dateRequested).format(
+                  "DD-MM-YYYY h:mm A"
+                )}</td>
+                <td>${element.patient}</td>
+                <td>${element.requestedBy}</td>
+                <td>${element.type}</td>
+                <td>${element.note}</td>
+              </tr>
+        `;
+      });
+      table.appendChild(tableBody);
+      tableWrapper.appendChild(table);
+      document.getElementById("mainContent").innerHTML = `<div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+      <h1 class="h2">Lab completed list</h1>
+    </div>`;
+      if (labCompletedList.length !== 0) {
+        document.getElementById("mainContent").appendChild(tableWrapper);
+        labCompletedList.forEach((element) => {
+          document.getElementById(element.id).addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showDetailLabCompleted(element);
+          });
+        });
+      } else {
+        document.getElementById("mainContent").innerHTML +=
+          "<div>There is no lab request completed</div>";
+      }
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
@@ -594,51 +731,74 @@ view.showLabRequestList = () => {
 };
 
 view.showDetailLabRequest = (req) => {
-  document.getElementById("mainContent").innerHTML = `
-  <div class=" modal-title display-4 fw-normal d-flex justify-content-center">Lab request</div>
-    <form id="editLabRequestForm">
-      <div class="d-flex">
-        <div class="flex-fill mr-3">
-          <div class="mb-3">
-            <label for="patient-name-lab-request" class="form-label">Patient</label>
-            <input type="text" class="form-control" id="patient-name-lab-request" aria-describedby="name-error">
-            <div id="patient-name-lab-request-error" class="form-text error"></div>
-          </div>
-          <div class="mb-3">
-            <label for="lab-type-request" class="form-label">Lab type</label>
-            <input type="text" class="form-control" id="lab-type-request" aria-describedby="name-error">
-            <div id="lab-type-request-error" class="form-text error"></div>
-          </div>
-          <div class="mb-3">
-            <label for="lab-note" class="form-label">Note</label>
-            <input type="text" class="form-control" id="note-lab" aria-describedby="note-error">
-            <div id="lab-note-error" class="form-text error"></div>
-          </div>
-          <div class="form-floating">
-          <label for="status">Status</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
-            id="status">
-            <option value="created">Created</option>
-            <option value="completed">Completed</option>
-          </select>
-          <div id="schedule-type-error" class="form-text error"></div>
-        </div>
-          <div class="mb-3">
-            <label for="lab-date-requested" class="form-label">Date requested</label>
-            <input type="text" class="form-control" id="lab-date-requested"disabled>
-          </div>
-          <div class="mb-3">
-            <label for="lab-requested-by" class="form-label">Requested by</label>
-            <input type="text" class="form-control" id="lab-requested-by"disabled>
-          </div>
-        </div>
-      </div>
-      <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary mr-1" id="editLabRequestBtn">Edit request</button>
-        <button type="button" class="btn btn-secondary cancel-btn" data-dismiss="modal" id="cancel-lab-request">Cancel</button>
-      </div>
-    </form>
-  `;
+  document.getElementById("mainContent").innerHTML =
+    components.detailLabRequestMainScreen;
+  if (model.currentUser.role !== "lab-technician") {
+    document.getElementById("status").disabled = true;
+    document.getElementById("lab-upload-data-wrapper").disabled = true;
+  }
+  document.getElementById("patient-name-lab-request").value = req.patient;
+  document.getElementById("lab-type-request").value = req.type;
+  document.getElementById("note-lab").value = req.note;
+  document.getElementById("lab-date-requested").value = moment(
+    req.dateRequested
+  ).format("DD-MM-YYYY h:mm A");
+  document.getElementById("lab-requested-by").value = req.requestedBy;
+  document.getElementById("status").value = req.status;
+  let dataAfterConvertFile;
+  document
+    .getElementById("lab-upload-data-btn")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      const inputUploadFile = document.getElementById("lab-upload-data");
+      const reader = new FileReader();
+      reader.onload = () => {
+        const data = reader.result.split("-----------------------------");
+        data[1] = data[1].replace(" \n", "").split("\n"); //data[1] la array
+        dataAfterConvertFile = data[1];
+      };
+      reader.readAsText(inputUploadFile.files[0]);
+    });
+  document
+    .getElementById("editLabRequestBtn")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      const labRequest = {
+        patient: document.getElementById("patient-name-lab-request").value,
+        type: document.getElementById("lab-type-request").value,
+        note: document.getElementById("note-lab").value,
+        status: document.getElementById("status").value,
+        data: dataAfterConvertFile,
+      };
+      controller.editLabRequest({ ...labRequest, id: req.id });
+    });
+  document
+    .getElementById("cancel-lab-request")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      view.showLabRequestList();
+    });
+  document.getElementById("deleteRequestBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    firebase
+      .firestore()
+      .collection("labs")
+      .doc(req.id)
+      .delete()
+      .then(() => {
+        alert("Document successfully deleted!");
+        view.showLabRequestList();
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+  });
+};
+
+view.showDetailLabCompleted = (req) => {
+  document.getElementById("mainContent").innerHTML =
+    components.detailLabCompletedMainScreen;
+  console.log(req);
   document.getElementById("patient-name-lab-request").value = req.patient;
   document.getElementById("lab-type-request").value = req.type;
   document.getElementById("note-lab").value = req.note;
@@ -659,6 +819,11 @@ view.showDetailLabRequest = (req) => {
       };
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
+  const graph = document.createElement("div");
+  graph.setAttribute("id", "graph");
+  graph.style = "flex:1";
+  Plotly.newPlot(graph, [{y:req.data}]);
+  document.querySelector('.graph-wrapper').appendChild(graph)
   document
     .getElementById("cancel-lab-request")
     .addEventListener("click", (e) => {
@@ -667,42 +832,44 @@ view.showDetailLabRequest = (req) => {
     });
 };
 
-view.showTodayAppointment = () => {
+view.showTodayAppointment = (role) => {
   let appointmentList = [];
   let appointmentTodayList = [];
-  firebase
-    .firestore()
-    .collection("appointment")
-    .where("doctorInCharge", "==", model.currentUser.id)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        let patient = { ...doc.data(), id: doc.id };
-        appointmentList.push(patient);
-      });
-    })
-    .then(() => {
-      console.log(appointmentList);
-      appointmentList.forEach((element) => {
-        if (
-          new Date(element.startDate).getDate() == new Date().getDate() &&
-          new Date(element.startDate).getMonth() == new Date().getMonth() &&
-          new Date(element.startDate).getFullYear() == new Date().getFullYear()
-        ) {
-          appointmentTodayList.push(element);
-        }
-      });
-      console.log(appointmentTodayList);
-    })
-    .then(() => {
-      let tableWrapper = document.createElement("div");
-      tableWrapper.classList.add("table-responsive");
-      let table = document.createElement("table");
-      table.classList.add("table");
-      table.classList.add("table-striped");
-      table.classList.add("table-sm");
-      let tableHeader = document.createElement("thead");
-      tableHeader.innerHTML = `
+  if (role == "doctor" || role == "nurse") {
+    firebase
+      .firestore()
+      .collection("appointment")
+      .where("doctorInCharge", "==", model.currentUser.id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let patient = { ...doc.data(), id: doc.id };
+          appointmentList.push(patient);
+        });
+      })
+      .then(() => {
+        console.log(appointmentList);
+        appointmentList.forEach((element) => {
+          if (
+            new Date(element.startDate).getDate() == new Date().getDate() &&
+            new Date(element.startDate).getMonth() == new Date().getMonth() &&
+            new Date(element.startDate).getFullYear() ==
+              new Date().getFullYear()
+          ) {
+            appointmentTodayList.push(element);
+          }
+        });
+        console.log(appointmentTodayList);
+      })
+      .then(() => {
+        let tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("table-responsive");
+        let table = document.createElement("table");
+        table.classList.add("table");
+        table.classList.add("table-striped");
+        table.classList.add("table-sm");
+        let tableHeader = document.createElement("thead");
+        tableHeader.innerHTML = `
               <tr>
                 <th>Date</th>
                 <th>Name</th>
@@ -710,11 +877,11 @@ view.showTodayAppointment = () => {
                 <th>Location</th>
               </tr>
       `;
-      console.log(tableHeader);
-      table.appendChild(tableHeader);
-      let tableBody = document.createElement("tbody");
-      appointmentTodayList.forEach((element) => {
-        tableBody.innerHTML += `
+        console.log(tableHeader);
+        table.appendChild(tableHeader);
+        let tableBody = document.createElement("tbody");
+        appointmentTodayList.forEach((element) => {
+          tableBody.innerHTML += `
               <tr class="cursor-pointer" id="${element.id}">
                 <td>${moment(element.startDate).format(
                   "DD-MM-YYYY h:mm A"
@@ -724,27 +891,109 @@ view.showTodayAppointment = () => {
                 <td>${element.location}</td>
               </tr>
         `;
-      });
-      table.appendChild(tableBody);
-      tableWrapper.appendChild(table);
-      document.getElementById("mainContent").innerHTML = `<div
+        });
+        table.appendChild(tableBody);
+        tableWrapper.appendChild(table);
+        document.getElementById("mainContent").innerHTML = `<div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
       <h1 class="h2">Today's appointment list</h1>
     </div>`;
-      if (appointmentTodayList.length == 0) {
-        document.getElementById("mainContent").innerHTML +=
-          "<div>You have no appointment today</div>";
-      } else {
-        document.getElementById("mainContent").appendChild(tableWrapper);
-        appointmentThisWeekList.forEach((element) => {
-          document.getElementById(element.id).addEventListener("click", (e) => {
-            e.preventDefault();
-            view.showDetailAppointment(element);
+        if (appointmentTodayList.length == 0) {
+          document.getElementById("mainContent").innerHTML +=
+            "<div>You have no appointment today</div>";
+        } else {
+          document.getElementById("mainContent").appendChild(tableWrapper);
+          appointmentThisWeekList.forEach((element) => {
+            document
+              .getElementById(element.id)
+              .addEventListener("click", (e) => {
+                e.preventDefault();
+                view.showDetailAppointment(element);
+              });
           });
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  } else if (role == "hospital-admin" || role == "patient-admin") {
+    firebase
+      .firestore()
+      .collection("appointment")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let patient = { ...doc.data(), id: doc.id };
+          appointmentList.push(patient);
         });
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting documents: ", error);
-    });
+      })
+      .then(() => {
+        console.log(appointmentList);
+        appointmentList.forEach((element) => {
+          if (
+            new Date(element.startDate).getDate() == new Date().getDate() &&
+            new Date(element.startDate).getMonth() == new Date().getMonth() &&
+            new Date(element.startDate).getFullYear() ==
+              new Date().getFullYear()
+          ) {
+            appointmentTodayList.push(element);
+          }
+        });
+        console.log(appointmentTodayList);
+      })
+      .then(() => {
+        let tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("table-responsive");
+        let table = document.createElement("table");
+        table.classList.add("table");
+        table.classList.add("table-striped");
+        table.classList.add("table-sm");
+        let tableHeader = document.createElement("thead");
+        tableHeader.innerHTML = `
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Location</th>
+              </tr>
+      `;
+        table.appendChild(tableHeader);
+        let tableBody = document.createElement("tbody");
+        appointmentTodayList.forEach((element) => {
+          tableBody.innerHTML += `
+              <tr class="cursor-pointer" id="${element.id}">
+                <td>${moment(element.startDate).format(
+                  "DD-MM-YYYY h:mm A"
+                )}</td>
+                <td>${element.name}</td>
+                <td>${element.scheduleType}</td>
+                <td>${element.location}</td>
+              </tr>
+        `;
+        });
+        table.appendChild(tableBody);
+        tableWrapper.appendChild(table);
+        document.getElementById("mainContent").innerHTML = `<div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+      <h1 class="h2">Today's appointment list</h1>
+    </div>`;
+        if (appointmentTodayList.length == 0) {
+          document.getElementById("mainContent").innerHTML +=
+            "<div>You have no appointment today</div>";
+        } else {
+          document.getElementById("mainContent").appendChild(tableWrapper);
+          appointmentTodayList.forEach((element) => {
+            document
+              .getElementById(element.id)
+              .addEventListener("click", (e) => {
+                e.preventDefault();
+                view.showDetailAppointment(element);
+              });
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  }
 };

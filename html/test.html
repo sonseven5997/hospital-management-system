@@ -6,58 +6,63 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="../css/mainScreen.css">
-  <!-- CSS only -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <!-- JS, Popper.js, and jQuery -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-    crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="../css/modalForm.css">
 </head>
 
 <body>
-  <div class="modal p-3 border border-dark border-2" style="background-color: #ffffff; width:50%; margin-left:25%"
-    id="modal-lab-request" aria-hidden="true">
-    <div class=" modal-title display-4 fw-normal d-flex justify-content-center">New appointment</div>
-    <form id="addNewPatientForm">
-      <div class="d-flex">
-        <div class="flex-fill mr-3">
-          <div class="mb-3">
-            <label for="patient-name-lab-request" class="form-label">Patient</label>
-            <input type="text" class="form-control" id="patient-name-lab-request" aria-describedby="name-error">
-            <div id="patient-name-lab-request-error" class="form-text error"></div>
-          </div>
-          <div class="mb-3">
-            <label for="lab-type-request" class="form-label">Lab type</label>
-            <input type="text" class="form-control" id="lab-type-request" aria-describedby="name-error">
-            <div id="lab-type-request" class="form-text error"></div>
-          </div>
-          <div class="mb-3">
-            <label for="lab-note" class="form-label">Note</label>
-            <input type="text" class="form-control" id="note" aria-describedby="note-error">
-            <div id="lab-note-error" class="form-text error"></div>
-          </div>
+  <div class=" modal-title display-4 fw-normal d-flex justify-content-center">Lab request</div>
+  <form id="editLabRequestForm">
+    <div class="flex-fill mr-3">
+      <div class="mb-3">
+        <label for="patient-name-lab-request" class="form-label">Patient</label>
+        <input type="text" class="form-control" id="patient-name-lab-request" aria-describedby="name-error">
+        <div id="patient-name-lab-request-error" class="form-text error"></div>
+      </div>
+      <div class="mb-3">
+        <label for="lab-type-request" class="form-label">Lab type</label>
+        <input type="text" class="form-control" id="lab-type-request" aria-describedby="name-error">
+        <div id="lab-type-request-error" class="form-text error"></div>
+      </div>
+      <div class="mb-3">
+        <label for="lab-note" class="form-label">Note</label>
+        <input type="text" class="form-control" id="note-lab" aria-describedby="note-error">
+        <div id="lab-note-error" class="form-text error"></div>
+      </div>
+      <div class="form-floating">
+        <label for="status">Status</label>
+        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example" id="status">
+          <option value="created">Created</option>
+          <option value="completed">Completed</option>
+        </select>
+        <div id="schedule-type-error" class="form-text error"></div>
+      </div>
+      <div class="mb-3">
+        <label for="lab-date-requested" class="form-label">Date requested</label>
+        <input type="text" class="form-control" id="lab-date-requested" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="lab-requested-by" class="form-label">Requested by</label>
+        <input type="text" class="form-control" id="lab-requested-by" disabled>
+      </div>
+      <div class="mb-3" id="lab-upload-data-wrapper">
+        <label for="lab-upload-data" class="form-label">Upload data</label>
+        <div class="input-group">
+          <input type="file" class="form-control pb-5" id="lab-upload-data" aria-describedby="inputGroupFileAddon04"
+            aria-label="Upload">
+          <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04"
+            id="lab-upload-data-btn">Upload</button>
         </div>
+        <div id="lab-note-error" class="form-text error"></div>
       </div>
-      <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary mr-1" id="addNewLabRequestBtn">Create</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-btn">Cancel</button>
-      </div>
-    </form>
-  </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn btn-primary mr-1" id="editLabRequestBtn">Edit request</button>
+      <button type="button" class="btn btn-danger mr-1" id="deleteRequestBtn">Delete</button>
+      <button type="button" class="btn btn-secondary cancel-btn" data-dismiss="modal"
+        id="cancel-lab-request">Cancel</button>
+    </div>
+    </div>
+  </form>
+
 </body>
 
 </html>
-
-<li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewLabRequest" data-toggle="modal" data-target="#modal-lab-request">New request</div></li>
