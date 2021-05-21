@@ -564,7 +564,9 @@ components.detailLabRequestMainScreen = `
         <input type="file" class="form-control pb-5" id="lab-upload-data" aria-describedby="inputGroupFileAddon04"
           aria-label="Upload">
         <button class="btn btn-outline-secondary" type="button"
-          id="lab-upload-data-btn">Upload</button>
+          id="lab-add-data-btn">Add</button>
+        <button class="btn btn-outline-secondary" type="button"
+          id="lab-upload-data-btn">Upload</button> 
       </div>
       <div id="lab-note-error" class="form-text error"></div>
     </div>

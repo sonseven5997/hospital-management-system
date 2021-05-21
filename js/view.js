@@ -747,18 +747,36 @@ view.showDetailLabRequest = (req) => {
   document.getElementById("status").value = req.status;
   let dataAfterConvertFile;
   document
-    .getElementById("lab-upload-data-btn")
+    .getElementById("lab-add-data-btn")
     .addEventListener("click", (e) => {
       e.preventDefault();
       const inputUploadFile = document.getElementById("lab-upload-data");
       const reader = new FileReader();
       reader.onload = () => {
         const data = reader.result.split("-----------------------------");
-        data[1] = data[1].replace(" \n", "").split("\n"); //data[1] la array
-        dataAfterConvertFile = data[1];
+        data[1] = data[1].replace(" \n", "").split("\n");
+        data[1].pop(); //data[1] la array
+        dataAfterConvertFile = data[1].map((e) => parseFloat(e));
+        console.log(dataAfterConvertFile);
       };
-      reader.readAsText(inputUploadFile.files[0]);
+      reader.readAsText(inputUploadFile.files[0])
     });
+    document.getElementById('lab-upload-data-btn').addEventListener('click',(e)=> {
+      e.preventDefault()
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify({ data: dataAfterConvertFile }),
+          redirect: "follow",
+        };
+        fetch("http://localhost:3000/", requestOptions)
+          .then((response) => {
+            console.log(response.text());
+          })
+          .catch((error) => console.log("error", error));
+    })
   document
     .getElementById("editLabRequestBtn")
     .addEventListener("click", (e) => {
@@ -822,8 +840,8 @@ view.showDetailLabCompleted = (req) => {
   const graph = document.createElement("div");
   graph.setAttribute("id", "graph");
   graph.style = "flex:1";
-  Plotly.newPlot(graph, [{y:req.data}]);
-  document.querySelector('.graph-wrapper').appendChild(graph)
+  Plotly.newPlot(graph, [{ y: req.data }]);
+  document.querySelector(".graph-wrapper").appendChild(graph);
   document
     .getElementById("cancel-lab-request")
     .addEventListener("click", (e) => {
