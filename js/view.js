@@ -745,7 +745,7 @@ view.showDetailLabRequest = (req) => {
   ).format("DD-MM-YYYY h:mm A");
   document.getElementById("lab-requested-by").value = req.requestedBy;
   document.getElementById("status").value = req.status;
-  let dataAfterConvertFile;
+  let dataAfterConvertFile, dataFFt
   document
     .getElementById("lab-add-data-btn")
     .addEventListener("click", (e) => {
@@ -773,7 +773,10 @@ view.showDetailLabRequest = (req) => {
         };
         fetch("http://localhost:3000/", requestOptions)
           .then((response) => {
-            console.log(response.text());
+            response.json().then(data => {
+              dataFFt = data
+              console.log('dataFFt = ', dataFFt)
+            })
           })
           .catch((error) => console.log("error", error));
     })
@@ -786,7 +789,7 @@ view.showDetailLabRequest = (req) => {
         type: document.getElementById("lab-type-request").value,
         note: document.getElementById("note-lab").value,
         status: document.getElementById("status").value,
-        data: dataAfterConvertFile,
+        data: {dataRaw: dataAfterConvertFile, dataFFT: dataFFt}
       };
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
@@ -837,11 +840,16 @@ view.showDetailLabCompleted = (req) => {
       };
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
-  const graph = document.createElement("div");
-  graph.setAttribute("id", "graph");
-  graph.style = "flex:1";
-  Plotly.newPlot(graph, [{ y: req.data }]);
-  document.querySelector(".graph-wrapper").appendChild(graph);
+  const graph1 = document.createElement("div");
+  graph1.setAttribute("id", "graph1");
+  graph1.style = "flex:1";
+  Plotly.newPlot(graph1, [{ y: req.data.dataRaw }]);
+  const graph2 = document.createElement("div");
+  graph2.setAttribute("id", "graph2");
+  graph2.style = "flex:1";
+  Plotly.newPlot(graph2, [{ y: req.data.dataFFT }]);
+  document.querySelector(".graph-wrapper").appendChild(graph1);
+  document.querySelector(".graph-wrapper").appendChild(graph2);
   document
     .getElementById("cancel-lab-request")
     .addEventListener("click", (e) => {
