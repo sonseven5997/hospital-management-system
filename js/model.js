@@ -1,12 +1,14 @@
 const model = {};
 model.currentUser = undefined;
+model.notification = { patient: [], appointment: [], lab: [] };
+model.countNotification = 0;
 model.register = (firstName, lastName, email, password, dob, gender, role) => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then((res) => {
       console.log(res);
-      firebase.auth().signOut()
+      firebase.auth().signOut();
       firebase.auth().currentUser.sendEmailVerification();
       firebase.auth().currentUser.updateProfile({
         displayName: firstName + " " + lastName,
@@ -180,19 +182,56 @@ model.editLabRequest = (req) => {
 };
 
 model.listenPatientChange = () => {
-  let isFirstRun = false
-  firebase.firestore().collection('patients').onSnapshot((res) => {
-    if (!isFirstRun){
-      isFirstRun = true
-      return
-    }
-    res.docChanges().forEach(element => {
-      if (element.type == 'modified') {
-        console.log(element.doc.data())
-        view.setNotification(element,'patient-notification','A patient information has been modified')
-      } else if(element.type ==  'added'){
-        view.setNotification(element,'patient-notification','A new patient has been added')
+  let isFirstRun = false;
+  firebase
+    .firestore()
+    .collection("patients")
+    .onSnapshot((res) => {
+      if (!isFirstRun) {
+        isFirstRun = true;
+        return;
       }
+      res.docChanges().forEach((element) => {
+        model.notification.patient.push(element);
+        model.countNotification++;
+        view.notification();
+      });
     });
-  })
-}
+};
+
+model.listentAppointmentChange = () => {
+  let isFirstRun = false;
+  firebase
+    .firestore()
+    .collection("appointment")
+    .where("doctorInCharge.id", "==", model.currentUser.id)
+    .onSnapshot((res) => {
+      if (!isFirstRun) {
+        isFirstRun = true;
+        return;
+      }
+      res.docChanges().forEach((element) => {
+        model.notification.appointment.push(element);
+        model.countNotification++;
+        view.notification();
+      });
+    });
+};
+
+model.listentLabRequestChange = () => {
+  let isFirstRun = false;
+  firebase
+    .firestore()
+    .collection("labs")
+    .onSnapshot((res) => {
+      if (!isFirstRun) {
+        isFirstRun = true;
+        return;
+      }
+      res.docChanges().forEach((element) => {
+        model.notification.lab.push(element);
+        model.countNotification++;
+        view.notification();
+      });
+    });
+};

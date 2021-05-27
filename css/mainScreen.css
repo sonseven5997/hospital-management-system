@@ -98,3 +98,11 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+.notification {
+  width: 10px;
+  height: 10px;
+  background: #027bfd;
+  border-radius: 50%;
+  margin-left: 10px;
+}

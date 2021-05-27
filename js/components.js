@@ -113,6 +113,11 @@ components.clinicalMainScreen = `
         <div class="position-sticky pt-3">
           <ul class="list-unstyled mb-0 py-3 pt-md-1">
             <li class="mb-1">
+              <button type="button" class="btn btn-light" id="notification">
+              Notifications <span class="badge bg-primary" id="notification-count"></span>
+              </button>
+            </li>
+            <li class="mb-1" id="patient-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#patients-collapse" aria-expanded="true" aria-current="true">
                 <span>Patients</span>
               </button>
@@ -124,7 +129,7 @@ components.clinicalMainScreen = `
                 </ul>
               </div>
             </li>
-            <li class="mb-1">
+            <li class="mb-1" id="schedule-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#schedule-collapse" aria-expanded="false" aria-current="true">
                 <span>Scheduling</span>
               </button>
@@ -137,7 +142,7 @@ components.clinicalMainScreen = `
                 </ul>
               </div>
             </li>
-            <li class="mb-1">
+            <li class="mb-1" id="labs-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#labs-collapse" aria-expanded="false" aria-current="true">
                 <span>Labs</span>
               </button>
@@ -373,6 +378,11 @@ components.adminMainScreen= `
         <div class="position-sticky pt-3">
           <ul class="list-unstyled mb-0 py-3 pt-md-1">
             <li class="mb-1">
+              <button type="button" class="btn btn-light" id="notification">
+              Notifications <span class="badge bg-primary" id="notification-count"></span>
+              </button>
+            </li>
+            <li class="mb-1" id="patient-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#patients-collapse" aria-expanded="true" aria-current="true">
                 <span>Patients</span>
               </button>
@@ -384,7 +394,7 @@ components.adminMainScreen= `
                 </ul>
               </div>
             </li>
-            <li class="mb-1">
+            <li class="mb-1" id="schedule-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#schedule-collapse" aria-expanded="false" aria-current="true">
                 <span>Scheduling</span>
               </button>
@@ -396,7 +406,7 @@ components.adminMainScreen= `
                 </ul>
               </div>
             </li>
-            <li class="mb-1">
+            <li class="mb-1" id="labs-li">
               <button class="btn d-inline-flex align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#labs-collapse" aria-expanded="false" aria-current="true">
                 <span>Labs</span>
               </button>
@@ -818,6 +828,11 @@ components.supportMainScreen = `<div  style="height:100vh">
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-flex bg-light sidebar collapse">
         <div class="position-sticky pt-3">
           <ul class="list-unstyled mb-0 py-3 pt-md-1">
+          <li class="mb-1">
+              <button type="button" class="btn btn-light" id="notification">
+              Notifications <span class="badge bg-primary" id="notification-count"></span>
+              </button>
+          </li>
           <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-list">Requests</div></li>
           <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-completed">Completed</div></li>
           </ul>

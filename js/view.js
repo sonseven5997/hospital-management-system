@@ -145,7 +145,10 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
+        view.showDetailNotification()
         model.listenPatientChange();
+        model.listentAppointmentChange();
+        model.listentLabRequestChange();
       } else if (
         model.currentUser.role == "hospital-admin" ||
         model.currentUser.role == "patient-admin"
@@ -211,7 +214,10 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
+        view.showDetailNotification()
         model.listenPatientChange();
+        model.listentAppointmentChange();
+        model.listentLabRequestChange();
       } else if (model.currentUser.role == "lab-technician") {
         document.getElementById("app").innerHTML = components.supportMainScreen;
         view.showLabRequestList();
@@ -237,8 +243,9 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
+        view.showDetailNotification()
+        model.listentLabRequestChange();
       }
-
       break;
     default:
       break;
@@ -307,7 +314,6 @@ view.showPatientList = () => {
       document.getElementById("mainContent").innerHTML = `<div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
       <h1 class="h2">Patient list</h1>
-      <div id="patient-notification"></div>
     </div>`;
       document.getElementById("mainContent").appendChild(tableWrapper);
       patientList.forEach((element) => {
@@ -1051,10 +1057,62 @@ view.graphDataFFT = (data) => {
   document.getElementById("mainContent").appendChild(graph2);
 };
 
-view.setNotification = (data,id,message) => {
-  document.getElementById(id).innerHTML = message
-  document.getElementById(id).addEventListener('click',(e) =>{
+// view.setNotification = (id) => {
+//   let noti = document.createElement('span')
+//   noti.classList.add('notification')
+//   document.getElementById(id).appendChild(noti)
+//   document.getElementById(id).addEventListener('click', (e) => {
+//     noti.style.display = "none"
+//   })
+// }
+view.notification = () => {
+  document.getElementById("notification-count").innerHTML = model.countNotification
+};
+
+view.showDetailNotification = () => {
+  document.getElementById('notification').addEventListener('click',(e) => {
     e.preventDefault()
-    view.showDetailPatient(data)
+    model.countNotification = 0
+    view.notification()
+    document.getElementById("mainContent").innerHTML = `
+    <div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+      <h1 class="h2">Notification list</h1>
+    </div>`;
+    let list = document.createElement('ul')
+    model.notification.patient.forEach(element => {
+      console.log(element)
+      let li = document.createElement('li')
+      li.classList.add('cursor-pointer')
+      li.innerHTML = `A patient has been ${element.type}: ${element.doc.data().name}`
+      li.addEventListener('click',(e) => {
+        e.preventDefault()
+        view.showDetailPatient(element.doc.data())
+      })
+      list.appendChild(li)
+    });
+    model.notification.appointment.forEach(element => {
+      console.log(element)
+      let li = document.createElement('li')
+      li.classList.add('cursor-pointer')
+      li.innerHTML = `An appointment has been ${element.type}`
+      li.addEventListener('click',(e) => {
+        e.preventDefault()
+        view.showDetailAppointment(element.doc.data())
+      })
+      list.appendChild(li)
+    });
+    model.notification.lab.forEach(element => {
+      console.log(element)
+      let li = document.createElement('li')
+      li.classList.add('cursor-pointer')
+      li.innerHTML = `A lab request has been ${element.type}`
+      li.addEventListener('click',(e) => {
+        e.preventDefault()
+        view.showDetailLabRequest(element.doc.data())
+      })
+      list.appendChild(li)
+    });
+    document.getElementById("mainContent").appendChild(list)
   })
 }
