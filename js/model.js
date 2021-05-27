@@ -178,3 +178,21 @@ model.editLabRequest = (req) => {
       console.error("Error writing document: ", error);
     });
 };
+
+model.listenPatientChange = () => {
+  let isFirstRun = false
+  firebase.firestore().collection('patients').onSnapshot((res) => {
+    if (!isFirstRun){
+      isFirstRun = true
+      return
+    }
+    res.docChanges().forEach(element => {
+      if (element.type == 'modified') {
+        console.log(element.doc.data())
+        view.setNotification(element,'patient-notification','A patient information has been modified')
+      } else if(element.type ==  'added'){
+        view.setNotification(element,'patient-notification','A new patient has been added')
+      }
+    });
+  })
+}

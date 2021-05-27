@@ -145,6 +145,7 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
+        model.listenPatientChange();
       } else if (
         model.currentUser.role == "hospital-admin" ||
         model.currentUser.role == "patient-admin"
@@ -210,6 +211,7 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
+        model.listenPatientChange();
       } else if (model.currentUser.role == "lab-technician") {
         document.getElementById("app").innerHTML = components.supportMainScreen;
         view.showLabRequestList();
@@ -236,6 +238,7 @@ view.setActiveScreen = (screenName) => {
             });
         });
       }
+
       break;
     default:
       break;
@@ -304,6 +307,7 @@ view.showPatientList = () => {
       document.getElementById("mainContent").innerHTML = `<div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
       <h1 class="h2">Patient list</h1>
+      <div id="patient-notification"></div>
     </div>`;
       document.getElementById("mainContent").appendChild(tableWrapper);
       patientList.forEach((element) => {
@@ -745,41 +749,43 @@ view.showDetailLabRequest = (req) => {
   ).format("DD-MM-YYYY h:mm A");
   document.getElementById("lab-requested-by").value = req.requestedBy;
   document.getElementById("status").value = req.status;
-  let dataAfterConvertFile, dataFFt
+  let dataAfterConvertFile, dataFFt;
+  document.getElementById("lab-add-data-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    const inputUploadFile = document.getElementById("lab-upload-data");
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = reader.result.split("-----------------------------");
+      data[1] = data[1].replace(" \n", "").split("\n");
+      data[1].pop(); //data[1] la array
+      dataAfterConvertFile = data[1].map((e) => parseFloat(e));
+      console.log(dataAfterConvertFile);
+    };
+    reader.readAsText(inputUploadFile.files[0]);
+  });
   document
-    .getElementById("lab-add-data-btn")
+    .getElementById("lab-upload-data-btn")
     .addEventListener("click", (e) => {
       e.preventDefault();
-      const inputUploadFile = document.getElementById("lab-upload-data");
-      const reader = new FileReader();
-      reader.onload = () => {
-        const data = reader.result.split("-----------------------------");
-        data[1] = data[1].replace(" \n", "").split("\n");
-        data[1].pop(); //data[1] la array
-        dataAfterConvertFile = data[1].map((e) => parseFloat(e));
-        console.log(dataAfterConvertFile);
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify({ data: dataAfterConvertFile }),
+        redirect: "follow",
       };
-      reader.readAsText(inputUploadFile.files[0])
+      fetch("http://localhost:3000/", requestOptions)
+        .then((response) => {
+          response.json().then((data) => {
+            dataFFt = data;
+            console.log("dataFFt = ", dataFFt);
+            view.graphDataRaw(dataAfterConvertFile);
+            view.graphDataFFT(dataFFt);
+          });
+        })
+        .catch((error) => console.log("error", error));
     });
-    document.getElementById('lab-upload-data-btn').addEventListener('click',(e)=> {
-      e.preventDefault()
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify({ data: dataAfterConvertFile }),
-          redirect: "follow",
-        };
-        fetch("http://localhost:3000/", requestOptions)
-          .then((response) => {
-            response.json().then(data => {
-              dataFFt = data
-              console.log('dataFFt = ', dataFFt)
-            })
-          })
-          .catch((error) => console.log("error", error));
-    })
   document
     .getElementById("editLabRequestBtn")
     .addEventListener("click", (e) => {
@@ -789,7 +795,10 @@ view.showDetailLabRequest = (req) => {
         type: document.getElementById("lab-type-request").value,
         note: document.getElementById("note-lab").value,
         status: document.getElementById("status").value,
-        data: {dataRaw: dataAfterConvertFile, dataFFT: dataFFt}
+        data: {
+          dataRaw: dataAfterConvertFile.toString(),
+          dataFFT: dataFFt.toString(),
+        },
       };
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
@@ -840,15 +849,8 @@ view.showDetailLabCompleted = (req) => {
       };
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
-  const graph1 = document.createElement("div");
-  graph1.setAttribute("id", "graph1");
-  graph1.style = "flex:1";
-  Plotly.newPlot(graph1, [{ y: req.data.dataRaw }]);
-  const graph2 = document.createElement("div");
-  graph2.setAttribute("id", "graph2");
-  graph2.style = "flex:1";
-  Plotly.newPlot(graph2, [{ y: req.data.dataFFT }]);
-  document.querySelector(".graph-wrapper").appendChild(graph1);
+  view.graphDataRaw(req.data.dataRaw.split(",").map((e) => parseFloat(e)));
+  view.graphDataFFT(req.data.dataFFT.split(",").map((e) => parseFloat(e)));
   document.querySelector(".graph-wrapper").appendChild(graph2);
   document
     .getElementById("cancel-lab-request")
@@ -1023,3 +1025,36 @@ view.showTodayAppointment = (role) => {
       });
   }
 };
+
+view.graphDataRaw = (data) => {
+  const graph1 = document.createElement("div");
+  graph1.setAttribute("id", "graph1");
+  graph1.style = "flex:1";
+  Plotly.newPlot(graph1, [{ y: data }]);
+  document.querySelector("#mainContent").appendChild(graph1);
+};
+
+view.graphDataFFT = (data) => {
+  let arr1 = [];
+  let arr2 = [];
+  if (data.length % 2 == 0) {
+    arr1 = data.slice(0, data.length / 2 - 1);
+    arr2 = data.slice(data.length / 2);
+  } else if (data.length % 2 !== 0) {
+    arr1 = data.slice(0, (data.length - 1) / 2);
+    arr2 = data.slice((data.length + 1) / 2);
+  }
+  const graph2 = document.createElement("div");
+  graph2.setAttribute("id", "graph2");
+  graph2.style = "flex:1";
+  Plotly.newPlot(graph2, [{ y: arr2.concat(arr1) }]);
+  document.getElementById("mainContent").appendChild(graph2);
+};
+
+view.setNotification = (data,id,message) => {
+  document.getElementById(id).innerHTML = message
+  document.getElementById(id).addEventListener('click',(e) =>{
+    e.preventDefault()
+    view.showDetailPatient(data)
+  })
+}

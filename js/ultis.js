@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
 app.post('/',(req,res) => {
   console.log(req.body)
+  let mean = req.body.data.reduce((a,b) => a+b,0)/req.body.data.length
+  console.log('mean data = ', mean)
+  req.body.data = req.body.data.map(e => e-mean)
   req.body.data.length = Math.pow(2, Math.ceil(Math.log(req.body.data.length)/Math.log(2)))
   console.log('req body length = ',req.body.data.length)
   req.body.data = Array.from(req.body.data, item => item || 0);
