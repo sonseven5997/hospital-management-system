@@ -1,5 +1,4 @@
 const view = {};
-
 view.setActiveScreen = (screenName) => {
   switch (screenName) {
     case "registerScreen":
@@ -145,7 +144,7 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
-        view.showDetailNotification()
+        view.showDetailNotification();
         model.listenPatientChange();
         model.listentAppointmentChange();
         model.listentLabRequestChange();
@@ -214,7 +213,7 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
-        view.showDetailNotification()
+        view.showDetailNotification();
         model.listenPatientChange();
         model.listentAppointmentChange();
         model.listentLabRequestChange();
@@ -243,7 +242,7 @@ view.setActiveScreen = (screenName) => {
               console.log(error);
             });
         });
-        view.showDetailNotification()
+        view.showDetailNotification();
         model.listentLabRequestChange();
       }
       break;
@@ -794,18 +793,21 @@ view.showDetailLabRequest = (req) => {
     });
   document
     .getElementById("editLabRequestBtn")
-    .addEventListener("click", (e) => {
+    .addEventListener("click", async (e) => {
       e.preventDefault();
+      let dataRaw = await html2canvas(document.getElementById('graph1')).then(canvas => canvas.toDataURL('image/png').toString())
+      let dataFFT = await html2canvas(document.getElementById('graph2')).then(canvas => canvas.toDataURL('image/png').toString())
       const labRequest = {
         patient: document.getElementById("patient-name-lab-request").value,
         type: document.getElementById("lab-type-request").value,
         note: document.getElementById("note-lab").value,
         status: document.getElementById("status").value,
         data: {
-          dataRaw: dataAfterConvertFile.toString(),
-          dataFFT: dataFFt.toString(),
+          dataRaw: dataRaw,
+          dataFFT: dataFFT
         },
       };
+      console.log(labRequest)
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
   document
@@ -843,21 +845,13 @@ view.showDetailLabCompleted = (req) => {
   ).format("DD-MM-YYYY h:mm A");
   document.getElementById("lab-requested-by").value = req.requestedBy;
   document.getElementById("status").value = req.status;
-  document
-    .getElementById("editLabRequestBtn")
-    .addEventListener("click", (e) => {
-      e.preventDefault();
-      const labRequest = {
-        patient: document.getElementById("patient-name-lab-request").value,
-        type: document.getElementById("lab-type-request").value,
-        note: document.getElementById("note-lab").value,
-        status: document.getElementById("status").value,
-      };
-      controller.editLabRequest({ ...labRequest, id: req.id });
-    });
-  view.graphDataRaw(req.data.dataRaw.split(",").map((e) => parseFloat(e)));
-  view.graphDataFFT(req.data.dataFFT.split(",").map((e) => parseFloat(e)));
-  document.querySelector(".graph-wrapper").appendChild(graph2);
+  let imgRawData = new Image()
+  imgRawData.src = req.data.dataRaw
+  document.getElementById('raw-data-graph').appendChild(imgRawData)
+  let imgFFTData = new Image()
+  imgFFTData.src = req.data.dataFFT
+  document.getElementById('fft-data-graph').appendChild(imgFFTData)
+
   document
     .getElementById("cancel-lab-request")
     .addEventListener("click", (e) => {
@@ -1032,7 +1026,11 @@ view.showTodayAppointment = (role) => {
   }
 };
 
+
 view.graphDataRaw = (data) => {
+  if(document.getElementById('graph1') !== null) {
+    document.getElementById("graph1").remove();
+  }
   const graph1 = document.createElement("div");
   graph1.setAttribute("id", "graph1");
   graph1.style = "flex:1";
@@ -1041,6 +1039,9 @@ view.graphDataRaw = (data) => {
 };
 
 view.graphDataFFT = (data) => {
+  if(document.getElementById('graph2') !== null) {
+    document.getElementById("graph2").remove();
+  }
   let arr1 = [];
   let arr2 = [];
   if (data.length % 2 == 0) {
@@ -1057,62 +1058,57 @@ view.graphDataFFT = (data) => {
   document.getElementById("mainContent").appendChild(graph2);
 };
 
-// view.setNotification = (id) => {
-//   let noti = document.createElement('span')
-//   noti.classList.add('notification')
-//   document.getElementById(id).appendChild(noti)
-//   document.getElementById(id).addEventListener('click', (e) => {
-//     noti.style.display = "none"
-//   })
-// }
 view.notification = () => {
-  document.getElementById("notification-count").innerHTML = model.countNotification
+  document.getElementById("notification-count").innerHTML =
+    model.countNotification;
 };
 
 view.showDetailNotification = () => {
-  document.getElementById('notification').addEventListener('click',(e) => {
-    e.preventDefault()
-    model.countNotification = 0
-    view.notification()
+  document.getElementById("notification").addEventListener("click", (e) => {
+    e.preventDefault();
+    model.countNotification = 0;
+    view.notification();
     document.getElementById("mainContent").innerHTML = `
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
       <h1 class="h2">Notification list</h1>
     </div>`;
-    let list = document.createElement('ul')
-    model.notification.patient.forEach(element => {
-      console.log(element)
-      let li = document.createElement('li')
-      li.classList.add('cursor-pointer')
-      li.innerHTML = `A patient has been ${element.type}: ${element.doc.data().name}`
-      li.addEventListener('click',(e) => {
-        e.preventDefault()
-        view.showDetailPatient(element.doc.data())
-      })
-      list.appendChild(li)
+    let list = document.createElement("ul");
+    model.notification.patient.forEach((element) => {
+      console.log(element);
+      let li = document.createElement("li");
+      li.classList.add("cursor-pointer");
+      li.innerHTML = `A patient has been ${element.type}: ${
+        element.doc.data().name
+      }`;
+      li.addEventListener("click", (e) => {
+        e.preventDefault();
+        view.showDetailPatient(element.doc.data());
+      });
+      list.appendChild(li);
     });
-    model.notification.appointment.forEach(element => {
-      console.log(element)
-      let li = document.createElement('li')
-      li.classList.add('cursor-pointer')
-      li.innerHTML = `An appointment has been ${element.type}`
-      li.addEventListener('click',(e) => {
-        e.preventDefault()
-        view.showDetailAppointment(element.doc.data())
-      })
-      list.appendChild(li)
+    model.notification.appointment.forEach((element) => {
+      console.log(element);
+      let li = document.createElement("li");
+      li.classList.add("cursor-pointer");
+      li.innerHTML = `An appointment has been ${element.type}`;
+      li.addEventListener("click", (e) => {
+        e.preventDefault();
+        view.showDetailAppointment(element.doc.data());
+      });
+      list.appendChild(li);
     });
-    model.notification.lab.forEach(element => {
-      console.log(element)
-      let li = document.createElement('li')
-      li.classList.add('cursor-pointer')
-      li.innerHTML = `A lab request has been ${element.type}`
-      li.addEventListener('click',(e) => {
-        e.preventDefault()
-        view.showDetailLabRequest(element.doc.data())
-      })
-      list.appendChild(li)
+    model.notification.lab.forEach((element) => {
+      console.log(element);
+      let li = document.createElement("li");
+      li.classList.add("cursor-pointer");
+      li.innerHTML = `A lab request has been ${element.type}`;
+      li.addEventListener("click", (e) => {
+        e.preventDefault();
+        view.showDetailLabCompleted(element.doc.data());
+      });
+      list.appendChild(li);
     });
-    document.getElementById("mainContent").appendChild(list)
-  })
-}
+    document.getElementById("mainContent").appendChild(list);
+  });
+};

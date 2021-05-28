@@ -628,6 +628,14 @@ components.detailLabCompletedMainScreen = `
           <label for="lab-requested-by" class="form-label">Requested by</label>
           <input type="text" class="form-control" id="lab-requested-by"disabled>
         </div>
+        <div class="mb-3">
+          <label for="patient-name-lab-request" class="form-label">Raw data graph</label>
+          <div id="raw-data-graph"></div>
+        </div>
+        <div class="mb-3">
+          <label for="patient-name-lab-request" class="form-label">FFT data graph</label>
+          <div id="fft-data-graph"></div>
+        </div>
       </div>
     </div>
     <div class="d-flex justify-content-end">
