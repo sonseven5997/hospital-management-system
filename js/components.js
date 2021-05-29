@@ -629,16 +629,16 @@ components.detailLabCompletedMainScreen = `
           <input type="text" class="form-control" id="lab-requested-by"disabled>
         </div>
         <div class="mb-3">
-          <label for="patient-name-lab-request" class="form-label">Raw data graph</label>
+          <label class="form-label">Raw data graph</label>
           <div id="raw-data-graph"></div>
         </div>
         <div class="mb-3">
-          <label for="patient-name-lab-request" class="form-label">FFT data graph</label>
+          <label class="form-label">FFT data graph</label>
           <div id="fft-data-graph"></div>
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end mb-3">
       <button type="submit" class="btn btn-primary mr-1" id="editLabRequestBtn" style="display:none">Edit request</button>
       <button type="button" class="btn btn-secondary cancel-btn" data-dismiss="modal" id="cancel-lab-request">Cancel</button>
     </div>
