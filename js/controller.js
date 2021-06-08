@@ -216,3 +216,41 @@ controller.editLabRequest = (req) => {
     model.editLabRequest(req);
   }
 };
+
+controller.updateProfile = (profile, docId) => {
+  profile.name == ""
+    ? view.setErrorMessage("user-name-error", "Name cannot be blank")
+    : view.setErrorMessage("user-name-error", "");
+  profile.dob == ""
+    ? view.setErrorMessage("user-dob-error", "Name cannot be blank")
+    : view.setErrorMessage("user-dob-error", "");
+  if (profile.name !== "" && profile.dob !== "") {
+    model.updateProfile(profile, docId);
+  }
+};
+
+controller.changePassword = (password, currentPassword) => {
+  currentPassword == ""
+    ? view.setErrorMessage("current-password-error", "This cannot be blank")
+    : view.setErrorMessage("current-password-error", "");
+  password.newPassword == ""
+    ? view.setErrorMessage("new-password-error", "This cannot be blank")
+    : view.setErrorMessage("new-password-error", "");
+  password.confirmNewPassword == ""
+    ? view.setErrorMessage("confirm-new-password-error", "This cannot be blank")
+    : view.setErrorMessage("confirm-new-password-error", "");
+  password.newPassword !== password.confirmNewPassword
+    ? view.setErrorMessage(
+        "confirm-new-password-error",
+        "New password and confirm new password does not match"
+      )
+    : view.setErrorMessage("confirm-new-password-error", "");
+  if (
+    currentPassword !== "" &&
+    password.newPassword !== "" &&
+    password.confirmNewPassword !== "" &&
+    password.newPassword == password.confirmNewPassword
+  ) {
+    model.changePassword(password,currentPassword)
+  }
+};

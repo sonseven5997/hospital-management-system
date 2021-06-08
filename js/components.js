@@ -99,12 +99,15 @@ components.clinicalMainScreen = `
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-        <a class="nav-link cursor-pointer" id="signOutBtn">Sign out</a>
-      </li>
-    </ul>
+    <div class="dropstart mr-3">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-user-cog"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="dropdown-wrapper" >
+        <li><div class="dropdown-item cursor-pointer" id="editProfileBtn">Edit profile</div></li>
+        <li><div class="dropdown-item cursor-pointer" id="signOutBtn">Sign out</div></li>
+      </ul>
+    </div>
   </header>
 
   <div class="container-fluid" style="height:94vh">
@@ -176,7 +179,7 @@ components.clinicalMainScreen = `
             </div>
             <div class="form-floating">
               <label for="patient-gender">Patient gender</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="patient-gender">
                 <option value="" selected></option>
                 <option value="male">Male</option>
@@ -214,7 +217,7 @@ components.clinicalMainScreen = `
           <div class="flex-fill">
             <div class="form-floating">
               <label for="patientType">Patient type</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="patientType">
                 <option value="" selected></option>
                 <option value="charity">Charity</option>
@@ -224,7 +227,7 @@ components.clinicalMainScreen = `
             </div>
             <div class="form-floating">
               <label for="bloodType">Blood type</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="bloodType">
                 <option value="" selected></option>
                 <option value="A+">A+</option>
@@ -284,7 +287,7 @@ components.clinicalMainScreen = `
         </div>
         <div class="form-floating">
           <label for="schedule-type">Type</label>
-          <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+          <select class="form-control" aria-label="Floating label select example"
             id="schedule-type">
             <option value="" selected></option>
             <option value="admission">Admission</option>
@@ -364,12 +367,15 @@ components.adminMainScreen= `
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-        <a class="nav-link cursor-pointer" id="signOutBtn">Sign out</a>
-      </li>
-    </ul>
+    <div class="dropstart mr-3">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-user-cog"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="dropdown-wrapper" >
+        <li><div class="dropdown-item cursor-pointer" id="editProfileBtn">Edit profile</div></li>
+        <li><div class="dropdown-item cursor-pointer" id="signOutBtn">Sign out</div></li>
+      </ul>
+    </div>
   </header>
 
   <div class="container-fluid" style="height:94vh">
@@ -380,6 +386,11 @@ components.adminMainScreen= `
             <li class="mb-1">
               <button type="button" class="btn btn-light" id="notification">
               Notifications <span class="badge bg-primary" id="notification-count"></span>
+              </button>
+            </li>
+            <li class="mb-1">
+              <button type="button" class="btn btn-light" id="employee-list">
+              Staff list
               </button>
             </li>
             <li class="mb-1" id="patient-li">
@@ -440,7 +451,7 @@ components.adminMainScreen= `
             </div>
             <div class="form-floating">
               <label for="patient-gender">Patient gender</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="patient-gender">
                 <option value="" selected></option>
                 <option value="male">Male</option>
@@ -478,7 +489,7 @@ components.adminMainScreen= `
           <div class="flex-fill">
             <div class="form-floating">
               <label for="patientType">Patient type</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="patientType">
                 <option value="" selected></option>
                 <option value="charity">Charity</option>
@@ -488,7 +499,7 @@ components.adminMainScreen= `
             </div>
             <div class="form-floating">
               <label for="bloodType">Blood type</label>
-              <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+              <select class="form-control" aria-label="Floating label select example"
                 id="bloodType">
                 <option value="" selected></option>
                 <option value="A+">A+</option>
@@ -554,7 +565,7 @@ components.detailLabRequestMainScreen = `
     </div>
     <div class="form-floating">
       <label for="status">Status</label>
-      <select class="form-control form-select-lg mb-3" aria-label="Floating label select example" id="status">
+      <select class="form-control" aria-label="Floating label select example" id="status">
         <option value="created">Created</option>
         <option value="completed">Completed</option>
       </select>
@@ -613,7 +624,7 @@ components.detailLabCompletedMainScreen = `
         </div>
         <div class="form-floating">
         <label for="status">Status</label>
-        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+        <select class="form-control" aria-label="Floating label select example"
           id="status" disabled>
           <option value="created">Created</option>
           <option value="completed">Completed</option>
@@ -663,7 +674,7 @@ components.detailAppointmentMainScreen = `
       </div>
       <div class="form-floating">
         <label for="schedule-type">Type</label>
-        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+        <select class="form-control" aria-label="Floating label select example"
           id="schedule-type">
           <option value="" selected></option>
           <option value="admission">Admission</option>
@@ -715,7 +726,7 @@ components.detailPatientMainScreen = `
       </div>
       <div class="form-floating">
         <label for="patient-gender">Patient gender</label>
-        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+        <select class="form-control" aria-label="Floating label select example"
           id="patient-gender">
           <option value="" selected></option>
           <option value="male">Male</option>
@@ -753,7 +764,7 @@ components.detailPatientMainScreen = `
     <div class="flex-fill">
       <div class="form-floating">
         <label for="patientType">Patient type</label>
-        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+        <select class="form-control" aria-label="Floating label select example"
           id="patientType">
           <option value="" selected></option>
           <option value="charity">Charity</option>
@@ -763,7 +774,7 @@ components.detailPatientMainScreen = `
       </div>
       <div class="form-floating">
         <label for="bloodType">Blood type</label>
-        <select class="form-control form-select-lg mb-3" aria-label="Floating label select example"
+        <select class="form-control" aria-label="Floating label select example"
           id="bloodType">
           <option value="" selected></option>
           <option value="A+">A+</option>
@@ -823,12 +834,15 @@ components.supportMainScreen = `<div  style="height:100vh">
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-        <a class="nav-link cursor-pointer" id="signOutBtn">Sign out</a>
-      </li>
-    </ul>
+    <div class="dropstart mr-3">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-user-cog"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="dropdown-wrapper" >
+        <li><div class="dropdown-item cursor-pointer" id="editProfileBtn">Edit profile</div></li>
+        <li><div class="dropdown-item cursor-pointer" id="signOutBtn">Sign out</div></li>
+      </ul>
+    </div>
   </header>
 
   <div class="container-fluid" style="height:94vh">
@@ -850,6 +864,82 @@ components.supportMainScreen = `<div  style="height:100vh">
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="flex:1" id="mainContent">
       </main>
     </div>
+  </div>
+</div>
+`
+components.changeProfile = `
+<div id="profile-wrapper">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">User profile</h1>
+  </div>
+  <form id="profile-form">
+    <div class="mb-3">
+      <label for="user-name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="user-name" aria-describedby="religion-error">
+      <div id="user-name-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="user-email" class="form-label">Email</label>
+      <input type="text" class="form-control" id="user-email" aria-describedby="religion-error" disabled>
+      <div id="user-email-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="user-id" class="form-label">ID</label>
+      <input type="text" class="form-control" id="user-id" aria-describedby="religion-error" disabled>
+      <div id="user-id-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="user-dob" class="form-label">Date of birth</label>
+      <input type="date" class="form-control" id="user-dob" aria-describedby="religion-error">
+      <div id="user-dob-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="user-gender" class="form-label">Gender</label>
+      <select id="user-gender" class="form-control">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="user-role" class="form-label">Role</label>
+      <input type="text" class="form-control" id="user-role" aria-describedby="religion-error" disabled>
+      <div id="user-role-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3 cursor-pointer" id="change-password">Change password</div>
+  </form>
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-primary mr-1" id="save-profile-btn">Save</button>
+    <button class="btn btn-secondary mr-1" id="cancel-profile-btn">Cancel</button>
+  </div>
+</div>
+`
+
+components.changePassword = `
+<div id="change-password-wrapper">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Change password</h1>
+  </div>
+  <form id="change-password-form">
+    <div class="mb-3">
+      <label for="current-password" class="form-label">Current password</label>
+      <input type="password" class="form-control" id="current-password">
+      <div id="current-password-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="new-password" class="form-label">New password</label>
+      <input type="password" class="form-control" id="new-password">
+      <div id="new-password-error" class="form-text error"></div>
+    </div>
+    <div class="mb-3">
+      <label for="confirm-new-password" class="form-label">Confirm new password</label>
+      <input type="password" class="form-control" id="confirm-new-password">
+      <div id="confirm-new-password-error" class="form-text error"></div>
+    </div>
+  </form>
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-primary mr-1" id="save-change-password-btn">Save</button>
+    <button class="btn btn-secondary mr-1" id="cancel-change-password-btn">Cancel</button>
   </div>
 </div>
 `

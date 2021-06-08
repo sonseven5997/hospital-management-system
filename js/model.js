@@ -235,3 +235,43 @@ model.listentLabRequestChange = () => {
       });
     });
 };
+
+model.updateProfile = (profile, docId) => {
+  firebase
+    .firestore()
+    .collection("users")
+    .doc(docId)
+    .set(profile, { merge: true })
+    .then(() => {
+      console.log("Document successfully written!");
+    })
+    .then(() => {
+      alert("Edit profile success!");
+      view.showPatientList();
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    });
+};
+
+model.changePassword = (password, currentPassword) => {
+  const user = firebase.auth().currentUser;
+  const credential = firebase.auth.EmailAuthProvider.credential(
+    user.email,
+    currentPassword
+  );
+  // Now you can use that to reauthenticate
+  user
+    .reauthenticateWithCredential(credential)
+    .then((res) => {
+      console.log(res);
+      user.updatePassword(password.newPassword).then(() => {
+        alert("Password updated!");
+        view.changeProfile()
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      view.setErrorMessage('current-password-error',err.message)
+    });
+};

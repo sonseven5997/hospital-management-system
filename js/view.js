@@ -48,6 +48,7 @@ view.setActiveScreen = (screenName) => {
       ) {
         document.getElementById("app").innerHTML =
           components.clinicalMainScreen;
+        view.setStyleDropdown();
         view.showPatientList();
         document
           .getElementById("patientList")
@@ -132,18 +133,12 @@ view.setActiveScreen = (screenName) => {
           .addEventListener("click", (e) => {
             view.showLabCompletedList();
           });
-        document.getElementById("signOutBtn").addEventListener("click", (e) => {
-          e.preventDefault();
-          firebase
-            .auth()
-            .signOut()
-            .then(() => {
-              view.setActiveScreen("registerScreen");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
+        view.signOut();
+        document
+          .getElementById("editProfileBtn")
+          .addEventListener("click", () => {
+            view.changeProfile();
+          });
         view.showDetailNotification();
         model.listenPatientChange();
         model.listentAppointmentChange();
@@ -153,6 +148,7 @@ view.setActiveScreen = (screenName) => {
         model.currentUser.role == "patient-admin"
       ) {
         document.getElementById("app").innerHTML = components.adminMainScreen;
+        view.setStyleDropdown();
         view.showPatientList();
         document
           .getElementById("patientList")
@@ -201,24 +197,25 @@ view.setActiveScreen = (screenName) => {
           .addEventListener("click", (e) => {
             view.showLabRequestList();
           });
-        document.getElementById("signOutBtn").addEventListener("click", (e) => {
-          e.preventDefault();
-          firebase
-            .auth()
-            .signOut()
-            .then(() => {
-              view.setActiveScreen("registerScreen");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
+        view.signOut();
+        document
+          .getElementById("editProfileBtn")
+          .addEventListener("click", () => {
+            view.changeProfile();
+          });
+        document
+          .getElementById("employee-list")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            view.showEmployeeList();
+          });
         view.showDetailNotification();
         model.listenPatientChange();
         model.listentAppointmentChange();
         model.listentLabRequestChange();
       } else if (model.currentUser.role == "lab-technician") {
         document.getElementById("app").innerHTML = components.supportMainScreen;
+        view.setStyleDropdown();
         view.showLabRequestList();
         document
           .getElementById("lab-request-list")
@@ -230,18 +227,12 @@ view.setActiveScreen = (screenName) => {
           .addEventListener("click", (e) => {
             view.showLabCompletedList();
           });
-        document.getElementById("signOutBtn").addEventListener("click", (e) => {
-          e.preventDefault();
-          firebase
-            .auth()
-            .signOut()
-            .then(() => {
-              view.setActiveScreen("registerScreen");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
+        view.signOut();
+        document
+          .getElementById("editProfileBtn")
+          .addEventListener("click", () => {
+            view.changeProfile();
+          });
         view.showDetailNotification();
         model.listentLabRequestChange();
       }
@@ -795,8 +786,12 @@ view.showDetailLabRequest = (req) => {
     .getElementById("editLabRequestBtn")
     .addEventListener("click", async (e) => {
       e.preventDefault();
-      let dataRaw = await html2canvas(document.getElementById('graph1')).then(canvas => canvas.toDataURL('image/png').toString())
-      let dataFFT = await html2canvas(document.getElementById('graph2')).then(canvas => canvas.toDataURL('image/png').toString())
+      let dataRaw = await html2canvas(document.getElementById("graph1")).then(
+        (canvas) => canvas.toDataURL("image/png").toString()
+      );
+      let dataFFT = await html2canvas(document.getElementById("graph2")).then(
+        (canvas) => canvas.toDataURL("image/png").toString()
+      );
       const labRequest = {
         patient: document.getElementById("patient-name-lab-request").value,
         type: document.getElementById("lab-type-request").value,
@@ -804,10 +799,10 @@ view.showDetailLabRequest = (req) => {
         status: document.getElementById("status").value,
         data: {
           dataRaw: dataRaw,
-          dataFFT: dataFFT
+          dataFFT: dataFFT,
         },
       };
-      console.log(labRequest)
+      console.log(labRequest);
       controller.editLabRequest({ ...labRequest, id: req.id });
     });
   document
@@ -845,12 +840,12 @@ view.showDetailLabCompleted = (req) => {
   ).format("DD-MM-YYYY h:mm A");
   document.getElementById("lab-requested-by").value = req.requestedBy;
   document.getElementById("status").value = req.status;
-  let imgRawData = new Image()
-  imgRawData.src = req.data.dataRaw
-  document.getElementById('raw-data-graph').appendChild(imgRawData)
-  let imgFFTData = new Image()
-  imgFFTData.src = req.data.dataFFT
-  document.getElementById('fft-data-graph').appendChild(imgFFTData)
+  let imgRawData = new Image();
+  imgRawData.src = req.data.dataRaw;
+  document.getElementById("raw-data-graph").appendChild(imgRawData);
+  let imgFFTData = new Image();
+  imgFFTData.src = req.data.dataFFT;
+  document.getElementById("fft-data-graph").appendChild(imgFFTData);
 
   document
     .getElementById("cancel-lab-request")
@@ -867,7 +862,7 @@ view.showTodayAppointment = (role) => {
     firebase
       .firestore()
       .collection("appointment")
-      .where("doctorInCharge", "==", model.currentUser.id)
+      .where("doctorInCharge.id", "==", model.currentUser.id)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -887,7 +882,7 @@ view.showTodayAppointment = (role) => {
             appointmentTodayList.push(element);
           }
         });
-        console.log(appointmentTodayList);
+        console.log('appointment today ==',appointmentTodayList);
       })
       .then(() => {
         let tableWrapper = document.createElement("div");
@@ -931,7 +926,7 @@ view.showTodayAppointment = (role) => {
             "<div>You have no appointment today</div>";
         } else {
           document.getElementById("mainContent").appendChild(tableWrapper);
-          appointmentThisWeekList.forEach((element) => {
+          appointmentTodayList.forEach((element) => {
             document
               .getElementById(element.id)
               .addEventListener("click", (e) => {
@@ -1026,9 +1021,8 @@ view.showTodayAppointment = (role) => {
   }
 };
 
-
 view.graphDataRaw = (data) => {
-  if(document.getElementById('graph1') !== null) {
+  if (document.getElementById("graph1") !== null) {
     document.getElementById("graph1").remove();
   }
   const graph1 = document.createElement("div");
@@ -1039,7 +1033,7 @@ view.graphDataRaw = (data) => {
 };
 
 view.graphDataFFT = (data) => {
-  if(document.getElementById('graph2') !== null) {
+  if (document.getElementById("graph2") !== null) {
     document.getElementById("graph2").remove();
   }
   let arr1 = [];
@@ -1111,4 +1105,177 @@ view.showDetailNotification = () => {
     });
     document.getElementById("mainContent").appendChild(list);
   });
+};
+
+view.showEmployeeList = () => {
+  let employeeList = [];
+  firebase
+    .firestore()
+    .collection("users")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let employee = { ...doc.data(), docId: doc.id };
+        employeeList.push(employee);
+      });
+    })
+    .then(() => {
+      let tableWrapper = document.createElement("div");
+      tableWrapper.classList.add("table-responsive");
+      let table = document.createElement("table");
+      table.classList.add("table");
+      table.classList.add("table-striped");
+      table.classList.add("table-sm");
+      let tableHeader = document.createElement("thead");
+      tableHeader.innerHTML = `
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
+      `;
+      table.appendChild(tableHeader);
+      let tableBody = document.createElement("tbody");
+      employeeList.forEach((element) => {
+        tableBody.innerHTML += `
+              <tr>
+                <td>${employeeList.indexOf(element) + 1}</td>
+                <td>${element.name}</td>
+                <td>${element.gender}</td>
+                <td>${element.dob}</td>
+                <td>${element.email}</td>
+                <td>${element.role}</td>
+                <td><button type="button" class="btn btn-outline-danger" id=${
+                  element.id
+                }>Delete</button></td>
+              </tr>
+        `;
+      });
+
+      table.appendChild(tableBody);
+      tableWrapper.appendChild(table);
+      document.getElementById("mainContent").innerHTML = `<div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+      <h1 class="h2">Employee list</h1>
+    </div>`;
+      document.getElementById("mainContent").appendChild(tableWrapper);
+      employeeList.forEach((element) => {
+        document.getElementById(element.id).addEventListener("click", (e) => {
+          e.preventDefault();
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(element.docId)
+            .delete()
+            .then(() => {
+              view.showEmployeeList();
+            })
+            .catch((err) => {
+              console.log("Error getting documents: ", err);
+            });
+        });
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+};
+
+view.signOut = () => {
+  document.getElementById("signOutBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        view.setActiveScreen("registerScreen");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+};
+
+view.changeProfile = () => {
+  let profile, docId;
+  document.getElementById("mainContent").innerHTML = components.changeProfile;
+  firebase
+    .firestore()
+    .collection("users")
+    .where("id", "==", model.currentUser.id)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        profile = doc.data();
+        docId = doc.id;
+        console.log(docId);
+      });
+    })
+    .then(() => {
+      document.getElementById("user-name").value = profile.name;
+      document.getElementById("user-email").value = profile.email;
+      document.getElementById("user-id").value = profile.id;
+      document.getElementById("user-dob").value = profile.dob;
+      document.getElementById("user-gender").value = profile.gender;
+      document.getElementById("user-role").value = profile.role;
+      document
+        .getElementById("save-profile-btn")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          let profileToUpdate = {
+            name: document.getElementById("user-name").value,
+            email: document.getElementById("user-email").value,
+            id: document.getElementById("user-id").value,
+            dob: document.getElementById("user-dob").value,
+            gender: document.getElementById("user-gender").value,
+            role: document.getElementById("user-role").value,
+          };
+          controller.updateProfile(profileToUpdate, docId);
+        });
+      document
+        .getElementById("cancel-profile-btn")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          view.showPatientList();
+        });
+      document
+        .getElementById("change-password")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          view.changePassword();
+        });
+    });
+};
+
+view.setStyleDropdown = () => {
+  let dropdown = document.getElementById("dropdown-wrapper");
+  dropdown.style.marginLeft = `${
+    window.innerWidth - $("#dropdown-wrapper").actual("width")
+  }px`;
+};
+
+view.changePassword = () => {
+  document.getElementById("mainContent").innerHTML = components.changePassword;
+  document
+    .getElementById("cancel-change-password-btn")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      view.changeProfile();
+    });
+  document
+    .getElementById("save-change-password-btn")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      let passwordToUpdate = {
+        newPassword: document.getElementById("new-password").value,
+        confirmNewPassword: document.getElementById("confirm-new-password")
+          .value,
+      };
+      let currentPassword = document.getElementById("current-password").value;
+      controller.changePassword(passwordToUpdate, currentPassword);
+    });
 };
