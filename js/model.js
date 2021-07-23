@@ -154,7 +154,7 @@ model.addNewLabRequest = (req) => {
       console.log("Document successfully written!");
     })
     .then(() => {
-      alert("Add new appointment success!");
+      alert("Add new lab request success!");
       view.hideModal();
       view.showLabRequestList();
     })
@@ -173,7 +173,7 @@ model.editLabRequest = (req) => {
       console.log("Document successfully written!");
     })
     .then(() => {
-      alert("Edit appointment success!");
+      alert("Edit lab request success!");
       view.showLabRequestList();
     })
     .catch((error) => {

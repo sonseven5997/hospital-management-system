@@ -78,7 +78,20 @@ view.setActiveScreen = (screenName) => {
             timeCheckIn: new Date().toISOString(),
             timeCheckOut: "",
           };
-          controller.addNewPatient(newPatient);
+          (document.getElementById("patient-name").value = ""),
+            (document.getElementById("patient-gender").value = ""),
+            (document.getElementById("patient-dob").value = ""),
+            (document.getElementById("patient-pob").value = ""),
+            (document.getElementById("patient-occupation").value = ""),
+            (document.getElementById("patient-email").value = ""),
+            (document.getElementById("patient-phone").value = ""),
+            (document.getElementById("patientType").value = ""),
+            (document.getElementById("bloodType").value = ""),
+            (document.getElementById("patient-referred-by").value = ""),
+            (document.getElementById("patient-referred-date").value = ""),
+            (document.getElementById("patient-religion").value = ""),
+            (document.getElementById("patient-parent-guardian").value = ""),
+            controller.addNewPatient(newPatient);
         });
         document.getElementById("doctor-in-charge").value =
           model.currentUser.name;
@@ -99,7 +112,13 @@ view.setActiveScreen = (screenName) => {
               name: model.currentUser.name,
             },
           };
-          controller.addNewAppointment(newAppointment);
+          (document.getElementById("patient-name-schedule").value = ""),
+            (document.getElementById("start-date").value = ""),
+            (document.getElementById("schedule-type").value = ""),
+            (document.getElementById("disease").value = ""),
+            (document.getElementById("location").value = ""),
+            (document.getElementById("note-appointment").value = ""),
+            controller.addNewAppointment(newAppointment);
         });
         document
           .getElementById("appointment-list")
@@ -121,7 +140,10 @@ view.setActiveScreen = (screenName) => {
             type: document.getElementById("lab-type-request").value,
             note: document.getElementById("note-lab").value,
           };
-          controller.addNewLabRequest(newLabRequest);
+          (document.getElementById("patient-name-lab-request").value = ""),
+            (document.getElementById("lab-type-request").value = ""),
+            (document.getElementById("note-lab").value = ""),
+            controller.addNewLabRequest(newLabRequest);
         });
         document
           .getElementById("lab-request-list")
@@ -178,7 +200,20 @@ view.setActiveScreen = (screenName) => {
             timeCheckIn: new Date().toISOString(),
             timeCheckOut: "",
           };
-          controller.addNewPatient(newPatient);
+          (document.getElementById("patient-name").value = ""),
+            (document.getElementById("patient-gender").value = ""),
+            (document.getElementById("patient-dob").value = ""),
+            (document.getElementById("patient-pob").value = ""),
+            (document.getElementById("patient-occupation").value = ""),
+            (document.getElementById("patient-email").value = ""),
+            (document.getElementById("patient-phone").value = ""),
+            (document.getElementById("patientType").value = ""),
+            (document.getElementById("bloodType").value = ""),
+            (document.getElementById("patient-referred-by").value = ""),
+            (document.getElementById("patient-referred-date").value = ""),
+            (document.getElementById("patient-religion").value = ""),
+            (document.getElementById("patient-parent-guardian").value = ""),
+            controller.addNewPatient(newPatient);
         });
         document
           .getElementById("appointment-list")
@@ -840,13 +875,14 @@ view.showDetailLabCompleted = (req) => {
   ).format("DD-MM-YYYY h:mm A");
   document.getElementById("lab-requested-by").value = req.requestedBy;
   document.getElementById("status").value = req.status;
-  let imgRawData = new Image();
-  imgRawData.src = req.data.dataRaw;
-  document.getElementById("raw-data-graph").appendChild(imgRawData);
-  let imgFFTData = new Image();
-  imgFFTData.src = req.data.dataFFT;
-  document.getElementById("fft-data-graph").appendChild(imgFFTData);
-
+  if (req.data != undefined) {
+    let imgRawData = new Image();
+    imgRawData.src = req.data.dataRaw;
+    document.getElementById("raw-data-graph").appendChild(imgRawData);
+    let imgFFTData = new Image();
+    imgFFTData.src = req.data.dataFFT;
+    document.getElementById("fft-data-graph").appendChild(imgFFTData);
+  }
   document
     .getElementById("cancel-lab-request")
     .addEventListener("click", (e) => {
@@ -882,7 +918,7 @@ view.showTodayAppointment = (role) => {
             appointmentTodayList.push(element);
           }
         });
-        console.log('appointment today ==',appointmentTodayList);
+        console.log("appointment today ==", appointmentTodayList);
       })
       .then(() => {
         let tableWrapper = document.createElement("div");
@@ -1027,7 +1063,7 @@ view.graphDataRaw = (data) => {
   }
   const graph1 = document.createElement("div");
   graph1.setAttribute("id", "graph1");
-  graph1.style = "flex:1";
+  graph1.style = "flex:1; display: inline-block";
   Plotly.newPlot(graph1, [{ y: data }]);
   document.querySelector("#mainContent").appendChild(graph1);
 };
@@ -1047,14 +1083,19 @@ view.graphDataFFT = (data) => {
   }
   const graph2 = document.createElement("div");
   graph2.setAttribute("id", "graph2");
-  graph2.style = "flex:1";
+  graph2.style = "flex:1; display: inline-block";
   Plotly.newPlot(graph2, [{ y: arr2.concat(arr1) }]);
   document.getElementById("mainContent").appendChild(graph2);
 };
 
 view.notification = () => {
-  document.getElementById("notification-count").innerHTML =
-    model.countNotification;
+  if (model.countNotification != 0) {
+    document.getElementById("notification-count").style = "display:inline";
+    document.getElementById("notification-count").innerHTML =
+      model.countNotification;
+  } else if (model.countNotification == 0) {
+    document.getElementById("notification-count").style = "display:none";
+  }
 };
 
 view.showDetailNotification = () => {
@@ -1068,41 +1109,55 @@ view.showDetailNotification = () => {
       <h1 class="h2">Notification list</h1>
     </div>`;
     let list = document.createElement("ul");
-    model.notification.patient.forEach((element) => {
-      console.log(element);
-      let li = document.createElement("li");
-      li.classList.add("cursor-pointer");
-      li.innerHTML = `A patient has been ${element.type}: ${
-        element.doc.data().name
-      }`;
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
-        view.showDetailPatient(element.doc.data());
+    model.notification.patient
+      .filter(function (item, pos) {
+        return model.notification.patient.indexOf(item) == pos;
+      })
+      .forEach((element) => {
+        console.log(element);
+        let li = document.createElement("li");
+        li.classList.add("cursor-pointer");
+        li.innerHTML = `A patient has been ${element.type}: ${
+          element.doc.data().name
+        }`;
+        li.addEventListener("click", (e) => {
+          e.preventDefault();
+          view.showDetailPatient(element.doc.data());
+        });
+        list.appendChild(li);
       });
-      list.appendChild(li);
-    });
-    model.notification.appointment.forEach((element) => {
-      console.log(element);
-      let li = document.createElement("li");
-      li.classList.add("cursor-pointer");
-      li.innerHTML = `An appointment has been ${element.type}`;
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
-        view.showDetailAppointment(element.doc.data());
+    model.notification.appointment
+      .filter(function (item, pos) {
+        return model.notification.appointment.indexOf(item) == pos;
+      })
+      .forEach((element) => {
+        console.log(element);
+        let li = document.createElement("li");
+        li.classList.add("cursor-pointer");
+        li.innerHTML = `An appointment has been ${element.type}`;
+        li.addEventListener("click", (e) => {
+          e.preventDefault();
+          view.showDetailAppointment(element.doc.data());
+        });
+        list.appendChild(li);
       });
-      list.appendChild(li);
-    });
-    model.notification.lab.forEach((element) => {
-      console.log(element);
-      let li = document.createElement("li");
-      li.classList.add("cursor-pointer");
-      li.innerHTML = `A lab request has been ${element.type}`;
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
-        view.showDetailLabCompleted(element.doc.data());
+    model.notification.lab
+      .filter(function (item, pos) {
+        return model.notification.lab.indexOf(item) == pos;
+      })
+      .forEach((element) => {
+        console.log(element);
+        let li = document.createElement("li");
+        li.classList.add("cursor-pointer");
+        li.innerHTML = `A lab request has been ${element.type}`;
+        li.addEventListener("click", (e) => {
+          e.preventDefault();
+          element.doc.data().status == "Completed"
+            ? view.showDetailLabRequest(element.doc.data())
+            : view.showDetailLabCompleted(element.doc.data());
+        });
+        list.appendChild(li);
       });
-      list.appendChild(li);
-    });
     document.getElementById("mainContent").appendChild(list);
   });
 };

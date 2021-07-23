@@ -128,7 +128,7 @@ components.clinicalMainScreen = `
               <div class="collapse" id="patients-collapse" style="">
                 <ul class="list-unstyled fw-normal pb-1 small">
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="patientList">Patient listing</div></li>
-                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewPatient" data-toggle="modal" data-target="#modal-add-patient">New patient</div></li>
+                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewPatient" data-toggle="modal" data-target="#modal-add-patient" data-backdrop="static" data-keyboard="false">New patient</div></li>
                 </ul>
               </div>
             </li>
@@ -141,7 +141,7 @@ components.clinicalMainScreen = `
                 <ul class="list-unstyled fw-normal pb-1 small">
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="appointment-list">Appointments this week</div></li>
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="today-appointment">Today's appointment</div></li>
-                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewAppointment" data-toggle="modal" data-target="#modal-add-appointment">Add an appointment</div></li>
+                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewAppointment" data-toggle="modal" data-target="#modal-add-appointment" data-backdrop="static" data-keyboard="false">Add an appointment</div></li>
                 </ul>
               </div>
             </li>
@@ -154,7 +154,7 @@ components.clinicalMainScreen = `
                 <ul class="list-unstyled fw-normal pb-1 small">
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-list">Requests</div></li>
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-completed">Completed</div></li>
-                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewLabRequest" data-toggle="modal" data-target="#modal-lab-request">New request</div></li>
+                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewLabRequest" data-toggle="modal" data-target="#modal-lab-request" data-backdrop="static" data-keyboard="false">New request</div></li>
                 </ul>
               </div>
             </li>
@@ -270,7 +270,7 @@ components.clinicalMainScreen = `
         </div>
       </form>
     </div>
-    <div class="modal p-3 border border-dark border-2" style="background-color: #ffffff; width:50%; margin-left:25%" id="modal-add-appointment" aria-hidden="true">
+    <div class="modal p-3 border border-dark border-2" style="background-color: #ffffff; width:50%; margin-left:25%" id="modal-add-appointment" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class=" modal-title display-4 fw-normal d-flex justify-content-center">New appointment</div>
   <form id="addNewAppointmentForm">
     <div class="d-flex">
@@ -327,7 +327,7 @@ components.clinicalMainScreen = `
   </form>
   </div>
   <div class="modal p-3 border border-dark border-2" style="background-color: #ffffff; width:50%; margin-left:25%"
-    id="modal-lab-request" aria-hidden="true">
+    id="modal-lab-request" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class=" modal-title display-4 fw-normal d-flex justify-content-center">New lab request</div>
     <form id="addLabRequestForm">
       <div class="d-flex">
@@ -401,7 +401,7 @@ components.adminMainScreen= `
               <div class="collapse" id="patients-collapse" style="">
                 <ul class="list-unstyled fw-normal pb-1 small">
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="patientList">Patient listing</div></li>
-                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewPatient" data-toggle="modal" data-target="#modal-add-patient">New patient</div></li>
+                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewPatient" data-toggle="modal" data-target="#modal-add-patient" data-backdrop="static" data-keyboard="false">New patient</div></li>
                 </ul>
               </div>
             </li>
@@ -426,7 +426,7 @@ components.adminMainScreen= `
                 <ul class="list-unstyled fw-normal pb-1 small">
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-list">Requests</div></li>
                     <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-completed">Completed</div></li>
-                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewLabRequest" data-toggle="modal" data-target="#modal-lab-request">New request</div></li>
+                    <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="addNewLabRequest" data-toggle="modal" data-target="#modal-lab-request" data-backdrop="static" data-keyboard="false">New request</div></li>
                 </ul>
               </div>
             </li>
@@ -855,8 +855,8 @@ components.supportMainScreen = `<div  style="height:100vh">
               Notifications <span class="badge bg-primary" id="notification-count"></span>
               </button>
           </li>
-          <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-list">Requests</div></li>
-          <li><div class="d-inline-flex align-items-center rounded ml-4 mb-1 cursor-pointer" id="lab-request-completed">Completed</div></li>
+          <li class="mb-1"><button type="button" class="btn btn-light" id="lab-request-list">Requests</button></li>
+          <li class="mb-1"><button type="button" class="btn btn-light" id="lab-request-completed">Completed</button></li>
           </ul>
         </div>
       </nav>
